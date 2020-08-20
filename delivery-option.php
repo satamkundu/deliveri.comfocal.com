@@ -401,7 +401,7 @@ $(document).ready(function(){
                             amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(count)).val()});
                         }else{
                             const base_amount_for_more_than_one_kg = 50;
-                            const base_amount_for_one_kg = 75;
+                            const base_amount_for_one_kg = 50;
                             for(var i = 1; i <= count; i++){
                                 if($("#weight-gm"+(i)).val() != 0){
                                     amount += base_amount_for_one_kg + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(i)).val());
