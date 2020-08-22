@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 p-0">
             <div class="track-box"></div>
             <div class="track-box-main-overlay"></div>
             <div class="track-box-main">
