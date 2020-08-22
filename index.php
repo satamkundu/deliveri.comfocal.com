@@ -236,11 +236,11 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 text-center">
-                                    <p class="upi-code"><b>UPI : 9093977877@ybl</b></p>
+                                    <!-- <p class="upi-code"><b>UPI : 9093977877@ybl</b></p> -->
                                 </div>
                                 <div class="col-md-6">
                                     <center>
-                                        <img src="assets/images/phonepay_qr_code.jpeg" alt="phonepay_qr_code" style="height:70vh">
+                                        <!-- <img src="assets/images/phonepay_qr_code.jpeg" alt="phonepay_qr_code" style="height:70vh"> -->
                                     </center>
                                 </div>
                                 <div class="col-md-12 text-center">
@@ -532,6 +532,10 @@
                                         
                                         newHTML.push('<div id="content2" style="background: #fff;border-bottom: 1px solid #ffffff;">'+
                                             '<div class="tokenDet" style="padding: 15px;border: 1px solid #000;width:50rem;margin: 0 auto;position: relative;overflow: hidden;">'+
+                                                '<div style="border-bottom: 1px solid #000;margin-bottom: 15px;height: 5rem;">'+
+                                                '<img src="assets/images/logo.png" style="height: 2rem;">'+
+                                                '<p style="font-size: 0.7rem;float: right;">Address : 51, College Road, Howrah, West Bengal 711103<br>Phone :+91-7450070216<br>Email ID :info@comfocall.co.in</p>'+
+                                                '</div>'+                                                
                                                 '<div class="title" style="text-align: center; color: green; border-bottom: 1px solid #000;margin-bottom: 15px;">'+
                                                     '<h2>Order Conformation Details</h2>'+
                                                 '</div>'+
