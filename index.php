@@ -14,6 +14,8 @@
     }
     .btn-ord{
         padding:3rem;
+        background-color:#00001B;
+        color:white;
     }
     .delivery-btn{
         padding-top:20vh
@@ -71,6 +73,10 @@
             display:inline;
             font-size: 0.7rem;
         }
+        .btn-last{
+            display:block;
+            margin:1rem;
+        }
     }
 </style>
 <body>
@@ -90,9 +96,9 @@
                     <div class="row">
                         <div class="col-md-3"></div>
                             <div class="col-md-6 text-center">
-                                <button type="button" class="btn-ord swift-btn btn btn-primary">Swift Delivery</button>
-                                <button type="button" class="btn-ord regular-btn btn btn-primary">Regular Delivery</button>
-                                <button type="button" class="btn-ord same-btn btn btn-primary">Same Day Delivery</button>
+                                <button type="button" class="btn-ord swift-btn btn">Swift Delivery</button>
+                                <button type="button" class="btn-ord regular-btn btn">Regular Delivery</button>
+                                <button type="button" class="btn-ord same-btn btn">Same Day Delivery</button>
                             </div>
                         </div> 
                     </div>
@@ -236,15 +242,19 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 text-center">
-                                    <!-- <p class="upi-code"><b>UPI : 9093977877@ybl</b></p> -->
+                                    <p class="upi-code"><b>UPI : 9088337606@okbizaxis</b></p>
                                 </div>
                                 <div class="col-md-6">
                                     <center>
-                                        <!-- <img src="assets/images/phonepay_qr_code.jpeg" alt="phonepay_qr_code" style="height:70vh"> -->
+                                        <img src="assets/images/comfocall_upi.jpeg" alt="qr_code" style="height:70vh">
                                     </center>
                                 </div>
                                 <div class="col-md-12 text-center">
-                                    <button class="btn btn-info" id="downloadPDF">Download PDF</button>
+                                    <!-- <button class="btn btn-info" id="downloadPDF" onclick="printDiv()">Print Bill</button> -->
+                                    <button class="btn btn-info btn-last" onclick="printDiv()">Print Bill</button>
+                                    <a href="https://wa.me/+917450070216"><button class="btn btn-info btn-last">Share Screenshot of Payment with your Order ID</button></a>
+                                    <button class="btn btn-success btn-last" id="printed-name-tag">Do you want printed name tag?</button>
+                                    <button class="btn btn-success btn-last" id="hand-written-name-tag">Do you want Hand written name tag?</button>
                                 </div>
                             </div>
                         </div>        
@@ -254,8 +264,8 @@
         </div>
     </div>
     <footer class="footer fixed-bottom text-white">
-        <div class="footer-copyright text-center py-3" style="background-color:red">© 2020 Copyright : 
-            <a href="https://comfocal.com/" style="color:white;"> comfocal.co.in</a>
+        <div class="footer-copyright text-center py-3" style="background-color:#00001B">© 2020 Copyright : 
+            <a href="https://comfocal.co.in/" style="color:white;"> comfocal.co.in</a>
         </div>
     </footer>
 </body>
@@ -376,7 +386,9 @@
             $("#next-2").attr("id", "next-1");
         });
 
-        $("#next-2").click(function(){        
+        $("#next-2").click(function(){       
+
+        details.delivery_details = []; 
 
         var tableLength = $("#productTable tbody tr").length;
 
@@ -511,7 +523,7 @@
                             title: 'Checkout Conformation',
                             text: "Do you want to proceed for checkout?",
                             footer: 'Total amount : '+details.amount,
-                            type: 'warning',
+                            icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',
                             cancelButtonColor: '#d33',
@@ -671,7 +683,7 @@
                                 $("#next-2").hide();
                                 $(".final_message").show();
                             }
-                        }); 
+                        });                         
                     }
                 }else{
                     // alert("Please Fill all delivery addressess");
@@ -699,6 +711,34 @@
             option = "same";
             details.delivery_option = option;
             // console.log(details);
+        });
+
+        $("#printed-name-tag").click(function(){
+            var hand_written = [];
+            hand_written.push('<b>PickUp Name :</b>' + details.pick_up_details.name + '<br><b>Delivery Name :</b><br>');
+            var cnt = 1;
+            for(var i = 0; i < details.delivery_details.length; i++){
+                hand_written.push(cnt + ' ' + details.delivery_details[i].name)+'<br>';
+                cnt++;
+            }
+            var newWin=window.open('','Print-Window');
+            newWin.document.open();
+            newWin.document.write('<html><body onload="window.print()">'+hand_written.join(" ")+'</body></html>');
+            newWin.document.close();
+            setTimeout(function(){newWin.close();},10);
+        });
+        $("#hand-written-name-tag").click(function(){
+            var hand_written = [];
+            hand_written.push('<b>PickUp Name :</b>' + details.pick_up_details.name + '<br><b>Delivery Name :</b><br>');
+            var cnt = 1;
+            for(var i = 0; i < details.delivery_details.length; i++){
+                hand_written.push(cnt + ' ' + details.delivery_details[i].name+'<br>');
+                cnt++;
+            }
+            Swal.fire({
+                title:'Name Tags',
+                html:hand_written.join(" "),
+            });
         });
     });
 
@@ -867,7 +907,8 @@
     }
 
     function printDiv(){
-        var divToPrint=document.getElementById('DivIdToPrint');
+        // var divToPrint=document.getElementById('DivIdToPrint');
+        var divToPrint=document.getElementById('content2');
         var newWin=window.open('','Print-Window');
         newWin.document.open();
         newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
