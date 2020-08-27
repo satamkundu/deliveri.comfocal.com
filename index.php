@@ -179,7 +179,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                                 <input type="number" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" id= "pin<?php echo $x; ?>" class="form-control mb-4" placeholder="Pincode" >
                                             </div>
                                             <div class="col-md-3 deli-frm">
-                                                <input type="number" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" id= "aprx_amt<?php echo $x; ?>" class="form-control mb-4" placeholder="Product Value" >
+                                                <input type="number" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" id= "aprx_amt<?php echo $x; ?>" class="form-control mb-4" placeholder="Declare Product Value" >
                                             </div>
                                             <div class="col-md-3 deli-frm">
                                                 <div class="row m-0">
@@ -852,7 +852,7 @@ if (session_status() == PHP_SESSION_NONE) {
                             '<input type="number" id= "pin'+count+'" class="form-control mb-4" placeholder="Pincode" >'+
                         '</div>'+
                         '<div class="col-md-3 deli-frm">'+
-                            '<input type="number" id="aprx_amt'+count+'" class="form-control mb-4" placeholder="Product Value" >'+
+                            '<input type="number" id="aprx_amt'+count+'" class="form-control mb-4" placeholder="Declare Product Value" >'+
                         '</div>'+
                         '<div class="col-md-3 deli-frm">'+
                             '<div class="row m-0">'+
