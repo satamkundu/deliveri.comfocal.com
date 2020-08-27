@@ -2,13 +2,8 @@
 require_once('include/top.php');
 if(strlen($_SESSION['alogin'])==0){ 
   header('location:index.php');
-}else{
+}else{  
   $oid=intval($_GET['oid']);
-  if(isset($_POST['submit2'])){
-    $status=$_POST['status'];
-    $query=mysqli_query($con,"UPDATE `order_main` SET `status` = '$status' WHERE `order_main`.`order_id` = $oid");
-    echo ($query)?"<script>alert('Order updated sucessfully...');</script>":"<script>alert('Something Went Wrong...');</script>";
-  }
 ?>
 <script language="javascript" type="text/javascript">
   function f2(){
@@ -27,9 +22,8 @@ if(strlen($_SESSION['alogin'])==0){
 <link href="anuj.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-
-<div style="margin-left:50px;">
-  
+<div class="loading">Loading&#8230;</div>
+<div style="margin-left:50px;">  
     <table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr height="50">
         <td colspan="2" class="fontkink2" style="padding-left:0px;"><div class="fontpink2"> <b>Update Order !</b></div></td>
@@ -57,10 +51,10 @@ if(strlen($_SESSION['alogin'])==0){
       <td class="fontkink1"><b>PickUp Details</b></th>
       <td class="fontkink">
         Name : <?=$row['p_name']?><br>
-        Phone : <?=$row['p_phone']?><br>
-        Address : <?=$row['p_add']?><br>
+        Address : <?=$row['p_add']?>
         Pin : <?=$row['p_pin']?><br>
-        Landmark : <?=$row['p_landmark']?>
+        Landmark : <?=$row['p_landmark']?><br>
+        Phone : <?=$row['p_phone']?><br>        
       </td>
     </tr>
     <tr>
@@ -76,18 +70,39 @@ if(strlen($_SESSION['alogin'])==0){
      <tr>
        <td class="fontkink1"><b>Drop Location (<?= mysqli_num_rows($rt1)?>)</b></td>
        <td class="fontkink">
-       <table width="100%" border="0" cellspacing="0" cellpadding="0">
+       <table width="100%" border="1" cellspacing="0" cellpadding="0" class="deli-table">
+       <tr>
+            <th>#</th>
+            <th class="fontkink2">Name</th>
+            <th class="fontkink2">Landmark</th>
+            <th class="fontkink2">Address</th>
+            <th class="fontkink2">Pin</th>
+            <th class="fontkink2">Phone</th>
+            <th class="fontkink2">Weight</th>
+            <th class="fontkink2">Product Value</th>
+            <th class="fontkink2">Status</th>
+          </tr>
     <?php
       while($num1=mysqli_fetch_array($rt1)){?>
           <tr>
             <td><?=$counter?></td>
-            <td class="fontkink2"><?="Name : ".$num1['name']?></td>
-            <td class="fontkink2"><?="Phone : ".$num1['phone']?></td>
-            <td class="fontkink2"><?="Address : ".$num1['address']?></td>
-            <td class="fontkink2"><?="Pin : ".$num1['pin']?></td>
-            <td class="fontkink2"><?="Weight : ".$num1['weight']." ".$num1['weight_unit']?></td>
-            <td class="fontkink2"><?="Landmark : ".$num1['landmark']?></td>
-            <td class="fontkink2"><?="Aprx Amount : ".$num1['aprx_amt']?></td>
+            <td class="fontkink2"><?=$num1['name']?></td>
+            <td class="fontkink2"><?=$num1['landmark']?></td>
+            <td class="fontkink2"><?=$num1['address']?></td>
+            <td class="fontkink2"><?=$num1['pin']?></td>
+            <td class="fontkink2"><?=$num1['phone']?></td>
+            <td class="fontkink2"><?=$num1['weight'].".".$num1['weight_gm']?></td>
+            <td class="fontkink2"><?=$num1['aprx_amt']?></td>
+            <td class="fontkink2">
+              <input type="hidden" id="id<?=$counter?>" value="<?=$num1['delivery_id']?>">
+              <select name="deli-status" class="fontkink" id="<?=$counter?>" onchange="change_deli_status(this.id)">
+                <option value="">Select Status</option>
+                <option value="in transit" <?=($num1['order_status']=="in transit")?'selected':''?>>In transit</option>
+                <option value="on the way to pick up" <?=($num1['order_status']=="on the way to pick up")?'selected':''?>>On the way to pick up</option>
+                <option value="delivered" <?=($num1['order_status']=="delivered")?'selected':''?>>Delivered</option>
+                <option value="cancel" <?=($num1['order_status']=="cancel")?'selected':''?>>Cancel</option>
+              </select>
+            </td>
           </tr>
         <?php $counter++; }  ?>
       </table>
@@ -97,42 +112,153 @@ if(strlen($_SESSION['alogin'])==0){
     <td colspan="2"><hr /></td>
   </tr>
   </table>
-
-  <form name="updateticket" id="updateticket" method="POST"> 
-   <?php 
-    $st='delivered';
-    $rt = mysqli_query($con,"SELECT * FROM order_main WHERE order_id='$oid'");
-    while($num=mysqli_fetch_array($rt)){
-     $currrentSt=$num['status'];
-    }
-    if($st==$currrentSt){ ?>
-    <tr>
-      <td colspan="2"><b>Product Delivered</b></td>
-    <?php }else  {?>   
-    <tr height="50">
-      <td class="fontkink1">Status: </td>
-        <td  class="fontkink"><span class="fontkink1" >
-          <select name="status" class="fontkink" required="required" >
-            <option value="">Select Status</option>
-            <option value="in process">In Process</option>
-            <option value="delivered">Delivered</option>
-          </select>
-        </span>
-      </td>
-    </tr>
-    <tr>
-      <td class="fontkink1">&nbsp;</td>
-      <td  >&nbsp;</td>
-    </tr>
-    <tr>
-      <td class="fontkink"></td>
-      <td  class="fontkink"> <input type="submit" name="submit2"  value="update"   size="40" style="cursor: pointer;" /> &nbsp;&nbsp;   
-      <input name="Submit2" type="submit" class="txtbox4" value="Close this Window " onClick="return f2();" style="cursor: pointer;"  /></td>
-    </tr>
-<?php } ?>
-</table>
- </form>
 </div>
 </body>
 </html>
 <?php } ?>
+<style>
+.deli-table tr td{
+  padding:1.5rem;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $('.loading').hide();
+});
+function change_deli_status(id){
+  $('.loading').show(); 
+  $.ajax({
+    type: "POST",
+    url: "process/process.php",
+    data: {id:$('#id'+id).val(),status:$('#'+id).val()},    
+    success: function(result){
+      location.reload();
+    }
+  });
+}
+</script>
+
+<style>
+  /* Absolute Center Spinner */
+  .loading {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* Transparent Overlay */
+  .loading:before {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+      background: radial-gradient(rgba(20, 20, 20,.8), rgba(0, 0, 0, .8));
+
+    background: -webkit-radial-gradient(rgba(20, 20, 20,.8), rgba(0, 0, 0,.8));
+  }
+
+  /* :not(:required) hides these rules from IE9 and below */
+  .loading:not(:required) {
+    /* hide "loading..." text */
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+  }
+
+  .loading:not(:required):after {
+    content: '';
+    display: block;
+    font-size: 10px;
+    width: 1em;
+    height: 1em;
+    margin-top: -0.5em;
+    -webkit-animation: spinner 150ms infinite linear;
+    -moz-animation: spinner 150ms infinite linear;
+    -ms-animation: spinner 150ms infinite linear;
+    -o-animation: spinner 150ms infinite linear;
+    animation: spinner 150ms infinite linear;
+    border-radius: 0.5em;
+    -webkit-box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1.1em 0 0, rgba(255,255,255, 0.75) 0 1.5em 0 0, rgba(255,255,255, 0.75) -1.1em 1.1em 0 0, rgba(255,255,255, 0.75) -1.5em 0 0 0, rgba(255,255,255, 0.75) -1.1em -1.1em 0 0, rgba(255,255,255, 0.75) 0 -1.5em 0 0, rgba(255,255,255, 0.75) 1.1em -1.1em 0 0;
+  box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1.1em 0 0, rgba(255,255,255, 0.75) 0 1.5em 0 0, rgba(255,255,255, 0.75) -1.1em 1.1em 0 0, rgba(255,255,255, 0.75) -1.5em 0 0 0, rgba(255,255,255, 0.75) -1.1em -1.1em 0 0, rgba(255,255,255, 0.75) 0 -1.5em 0 0, rgba(255,255,255, 0.75) 1.1em -1.1em 0 0;
+  }
+
+  /* Animation */
+
+  @-webkit-keyframes spinner {
+    0% {
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @-moz-keyframes spinner {
+    0% {
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @-o-keyframes spinner {
+    0% {
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes spinner {
+    0% {
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+</style>

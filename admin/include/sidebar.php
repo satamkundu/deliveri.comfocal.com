@@ -44,6 +44,9 @@
 			</li>
 		</ul>
 		<ul class="widget widget-menu unstyled">						
+			<li><a href="main.php"><i class="menu-icon icon-file"></i>Report</a></li>
+		</ul>
+		<ul class="widget widget-menu unstyled">						
 			<li><a href="logout.php"><i class="menu-icon icon-signout"></i>Logout</a></li>
 		</ul>
 	</div>

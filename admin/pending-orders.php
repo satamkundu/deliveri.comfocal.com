@@ -54,7 +54,6 @@ if(strlen($_SESSION['alogin'])==0){
 									<th>OrderID</th>						
 									<th>Amount </th>
 									<th>Order Date</th>
-									<th>Status</th>
 									<th>Action</th>
 									</tr>
 								</thead>								
@@ -70,7 +69,6 @@ if(strlen($_SESSION['alogin'])==0){
 											<td><?php echo htmlentities($row['order_id']);?></td>
 											<td><?php echo htmlentities($row['total_price']);?></td>					
 											<td><?php echo htmlentities($row['datetime'])?></td>
-											<td><?php echo htmlentities($row['status']);?></td>
 											<td><a href="updateorder.php?oid=<?php echo htmlentities($row['order_id']);?>" title="Update order" target="_blank"><i class="icon-edit"></i></a>
 											</td>
 											</tr>

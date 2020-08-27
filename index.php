@@ -1,3 +1,4 @@
+<?php if(!session_start())session_start(); ?>
 <?php include_once 'includes/top.php'; ?>
 <style>
     * {
@@ -10,7 +11,7 @@
     }
     .upi-code{
         font-size:2rem;
-        padding-top:35vh;
+        padding-top:10vh;
     }
     .btn-ord{
         padding:3rem;
@@ -34,6 +35,11 @@
     }
     .final_message{
         margin-top: -6rem;
+    }
+    .bank-details{
+        margin-left:17vh;
+        text-align: left;
+        margin-bottom:1rem;
     }
     @media only screen and (max-width: 600px) {
         .legend {
@@ -63,7 +69,7 @@
         }
         .btn-ord{
             padding:2rem;
-            width: inherit;
+            width: 100%;
             margin-bottom:1rem;
         }
         #res{
@@ -77,14 +83,29 @@
             display:block;
             margin:1rem;
         }
+        .bank-details{
+            margin-left:0vh;
+        }
     }
 </style>
 <body>
     <div class="container-fluid">
         <div class="row"> 
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <img class="logo" src="assets/images/logo.png" alt="Logo">
             </div>
+            <?php
+                $user_id = 0;
+                if(isset($_SESSION["id"]) && $_SESSION["username"] ){
+                    $user_id = $_SESSION["id"];
+            ?>
+            <div class="col-md-6">
+                <p style="float: right;padding: 2rem 2rem;">
+                    <i class="fa fa-user pr-2" aria-hidden="true"></i><b class="pr-5"><?php echo htmlspecialchars($_SESSION["username"]); ?></b>
+                    <a href="users/logout.php" class="btn btn-danger">Sign Out</a>
+                </p>
+            </div>
+                <?php } ?>
         </div>
     </div>
     <div class="container-fluid" style="margin-bottom:6rem;">
@@ -92,11 +113,11 @@
             <div class="col-md-12">
                 <div class="fieldset">                    
                     <div class="delivery-btn">
-                    <h1 class="legend text-center text-primary">Choose Delivery Option</h1>
-                    <div class="row">
-                        <div class="col-md-3"></div>
+                        <h1 class="legend text-center text-primary">Choose Delivery Option</h1>
+                        <div class="row">
+                            <div class="col-md-3"></div>
                             <div class="col-md-6 text-center">
-                                <button type="button" class="btn-ord swift-btn btn">Swift Delivery</button>
+                                <a href="https://wa.me/+917450070216"> <button type="button" class="btn-ord swift-btn btn">Swift Delivery</button></a>
                                 <button type="button" class="btn-ord regular-btn btn">Regular Delivery</button>
                                 <button type="button" class="btn-ord same-btn btn">Same Day Delivery</button>
                             </div>
@@ -105,7 +126,7 @@
                 </div>
 
                 <div class="fieldset">
-                    <div class="pick_up_details">
+                    <div class="pick_up_details" style="display:none">
                         <div class="row">
                             <div class="col-md-3"></div>
                             <div class="col-md-6 pick-box">
@@ -125,7 +146,7 @@
                 </div>
 
                 <div class="fieldset">
-                    <div class="delivery_details">
+                    <div class="delivery_details" style="display:none">
                         <form class="text-center border border-light" action="#!" style="padding-bottom:15vh;">
                             <p class="h4 mb-4 pick-head text-info">Delivery Details</p>
                             <table class="table" style="width: 100%;" id="productTable">
@@ -207,12 +228,11 @@
                         <button id="back-2" type="button" class="back-btn btn btn-danger">Back</button>
                         <button id="next-2" style="float:right" type="button" class="next-btn btn btn-success">Place Order</button>
                     </div>
-                   
                 </div>
             </div>
         </div>
     </div>
-    <div class="final_message" style="margin-bottom:6rem;">
+    <div class="final_message" style="margin-bottom:6rem;" style="display:none">
         <div class="accordion" id="accordionExample">
             <div class="card">
                 <div class="card-header text-center" id="headingOne">
@@ -243,6 +263,12 @@
                             <div class="row">
                                 <div class="col-md-6 text-center">
                                     <p class="upi-code"><b>UPI : 9088337606@okbizaxis</b></p>
+                                    <div style="color:blue;padding-bottom:1rem">OR</div>                                    
+                                    <table class="bank-details"><tr><th>ACCOUNT NUMBER &nbsp;&nbsp;: </th><td>50302496616</td>
+                                    <tr><th>BANK: </th><td>ALLAHABAD BANK</td>
+                                    <tr><th>BRANCH: </th><td>HOWRAH BOTANICAL GARDEN</td>
+                                    <tr><th>IFSC CODE: </th><td>ALLA0211813</td>
+                                    </table>
                                 </div>
                                 <div class="col-md-6">
                                     <center>
@@ -254,7 +280,7 @@
                                     <button class="btn btn-info btn-last" onclick="printDiv()">Print Bill</button>
                                     <a href="https://wa.me/+917450070216"><button class="btn btn-info btn-last">Share Screenshot of Payment with your Order ID</button></a>
                                     <button class="btn btn-success btn-last" id="printed-name-tag">Do you want printed name tag?</button>
-                                    <button class="btn btn-success btn-last" id="hand-written-name-tag">Do you want Hand written name tag?</button>
+                                    <button class="btn btn-success btn-last" id="hand-written-name-tag" data-toggle="modal" data-target=".bd-example-modal-lg">Do you want Hand written name tag?</button>
                                 </div>
                             </div>
                         </div>        
@@ -263,6 +289,13 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
     <footer class="footer fixed-bottom text-white">
         <div class="footer-copyright text-center py-3" style="background-color:#00001B">© 2020 Copyright : 
             <a href="https://comfocal.co.in/" style="color:white;"> comfocal.co.in</a>
@@ -283,7 +316,8 @@
         },
         delivery_details :[],
         order_id:Math.floor(Math.random()*900000000) + 100000000,
-        amount:""
+        amount:"",
+        user_id:<?=$user_id?>
     }
 
     let option;
@@ -303,11 +337,11 @@
             // option = "swift";
             // details.delivery_option = option;
             // alert('Currently Unavailable this Option')
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Currently Unavailable this Option',
-            });
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: 'Oops...',
+            //     text: 'Currently Unavailable this Option',
+            // });
         });
 
         $(".back-btn").click(function(){
@@ -520,7 +554,7 @@
                         }
 
                         Swal.fire({
-                            title: 'Checkout Conformation',
+                            title: 'Checkout Confirmation',
                             text: "Do you want to proceed for checkout?",
                             footer: 'Total amount : '+details.amount,
                             icon: 'warning',
@@ -546,13 +580,13 @@
                                             '<div class="tokenDet" style="padding: 15px;border: 1px solid #000;width:50rem;margin: 0 auto;position: relative;overflow: hidden;">'+
                                                 '<div style="border-bottom: 1px solid #000;margin-bottom: 15px;height: 5rem;">'+
                                                 '<img src="assets/images/logo.png" style="height: 2rem;">'+
-                                                '<p style="font-size: 0.7rem;float: right;">Address : 51, College Road, Howrah, West Bengal 711103<br>Phone :+91-7450070216<br>Email ID :info@comfocall.co.in</p>'+
+                                                '<p style="font-size: 0.7rem;float: right;">Address : 51, College Road, Howrah, West Bengal 711103<br>Email ID : info@comfocall.co.in</p>'+
                                                 '</div>'+                                                
                                                 '<div class="title" style="text-align: center; color: green; border-bottom: 1px solid #000;margin-bottom: 15px;">'+
-                                                    '<h2>Order Conformation Details</h2>'+
+                                                    '<h2>Order Confirmation Details</h2>'+
                                                 '</div>'+
                                                 '<div class="parentdiv" style="display: inline-block;width: 100%;position: relative;color: black;">'+
-                                                    '<div class="innerdiv" style="width: 80%;float: left;">'+
+                                                    '<div class="innerdiv" style="width: 100%;float: left;">'+
                                                         '<div class="restDet">'+
                                                             '<div class="div">'+
                                                                 '<div class="label" style="width: 30%;float: left;">'+
@@ -592,10 +626,10 @@
                                                                     var cnt = 1;
                                                                     newHTML.push('<table class="table">'+
                                                                     '<tr>'+
-                                                                        '<th>#</th>'+
+                                                                        '<th></th>'+
                                                                         '<th>Price</th>'+
                                                                         '<th>COD</th>'+
-                                                                        '<th>COD Gateway charge(1.5%)</th>'+
+                                                                        '<th>COD Gateway charge (1.5%)</th>'+
                                                                     '</tr>');
                                                                     for (var i = 0; i < details.delivery_details.length; i++) {
                                                                         newHTML.push('<tr>'+
@@ -653,7 +687,7 @@
                                         var cnt = 1;
                                         newHTML_Mobile.push('<table class="table table-sm">'+
                                         '<tr>'+
-                                            '<th>#</th>'+
+                                            '<th></th>'+
                                             '<th>Price</th>'+
                                             '<th>COD</th>'+
                                             '<th>COD Gateway charge(1.5%)</th>'+
@@ -715,12 +749,22 @@
 
         $("#printed-name-tag").click(function(){
             var hand_written = [];
-            hand_written.push('<b>PickUp Name :</b>' + details.pick_up_details.name + '<br><b>Delivery Name :</b><br>');
-            var cnt = 1;
-            for(var i = 0; i < details.delivery_details.length; i++){
-                hand_written.push(cnt + ' ' + details.delivery_details[i].name)+'<br>';
-                cnt++;
-            }
+            hand_written.push('<table style="width:65rem;font-size:1.1rem;border-collapse: collapse;">'+            
+            '<tbody>'+               
+                '<tr>'+
+                    '<th colspan="3">Delivery Details</th>'+                           
+                '</tr>');
+                var cnt = 1;
+                for(var i = 0; i < details.delivery_details.length; i++){
+                    hand_written.push('<tr>'+
+                            '<th>'+cnt+'</th>'+
+                            '<td style="width:30rem;padding:1.5rem;border-style: dotted;"><b>From : </b><br>'+ details.pick_up_details.name +'<br>'+ details.pick_up_details.address+', '+details.pick_up_details.pincode+'<br>'+ details.pick_up_details.landmark+'</td>'+
+                            '<td style="width:30rem;padding:1.5rem;border-style: dotted;"><b>To : </b><br>'+ details.delivery_details[i].name +'<br>'+ details.delivery_details[i].add+', '+details.delivery_details[i].pin+'<br>'+ details.delivery_details[i].landmark+'</td>'+
+                        '</tr>');
+                    cnt++;
+                }
+                hand_written.push('</tbody>'+
+            '</table>');
             var newWin=window.open('','Print-Window');
             newWin.document.open();
             newWin.document.write('<html><body onload="window.print()">'+hand_written.join(" ")+'</body></html>');
@@ -729,16 +773,32 @@
         });
         $("#hand-written-name-tag").click(function(){
             var hand_written = [];
-            hand_written.push('<b>PickUp Name :</b>' + details.pick_up_details.name + '<br><b>Delivery Name :</b><br>');
-            var cnt = 1;
-            for(var i = 0; i < details.delivery_details.length; i++){
-                hand_written.push(cnt + ' ' + details.delivery_details[i].name+'<br>');
-                cnt++;
-            }
-            Swal.fire({
-                title:'Name Tags',
-                html:hand_written.join(" "),
-            });
+            hand_written.push('<table class="table table-sm">'+
+                        '<thead>'+
+                            '<tr>'+
+                                '<th scope="col" colspan="3">Pick Up Details</th>'+                            
+                            '</tr>'+
+                        '</thead>'+
+                        '<tbody>'+
+                            '<tr>'+                                
+                                '<td scope="col" colspan="3">'+ details.pick_up_details.name +', '+ details.pick_up_details.address+', '+details.pick_up_details.pincode+', '+ details.pick_up_details.landmark+'</td>'+
+                            '</tr>'+
+                            '<tr>'+
+                                '<th scope="col" colspan="3">Delivery Details</th>'+                           
+                           '</tr>');
+
+                            var cnt = 1;
+                            for(var i = 0; i < details.delivery_details.length; i++){
+                                hand_written.push('<tr>'+
+                                        '<th>'+cnt+'</th>'+
+                                        '<td>From<br>'+ details.pick_up_details.name +'<br>'+ details.pick_up_details.address+', '+details.pick_up_details.pincode+'<br>'+ details.pick_up_details.landmark+'</td>'+
+                                        '<td>To<br>'+ details.delivery_details[i].name +'<br>'+ details.delivery_details[i].add+', '+details.delivery_details[i].pin+'<br>'+ details.delivery_details[i].landmark+'</td>'+
+                                    '</tr>');
+                                cnt++;
+                            }
+                            hand_written.push('</tbody>'+
+                        '</table>');
+                $('.modal-content').html(hand_written.join(" "));
         });
     });
 

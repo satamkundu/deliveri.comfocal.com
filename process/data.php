@@ -1,6 +1,5 @@
 <?php
-$con = mysqli_connect("localhost", "root", "", "comfocall");
-if(!$con) die('Failed to Connect');
+require_once '../includes/config.php';
 function test_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
@@ -13,6 +12,7 @@ if(isset($_POST['myData'])){
     $order_id = test_input($obj->order_id);
     $total_amount = test_input($obj->amount);
     $delivery_options = test_input($obj->delivery_option);
+    $user_id = test_input($obj->user_id);
 
     if($delivery_options == "regular") $delivery_option_id = 1;
     if($delivery_options == "same") $delivery_option_id = 2;
@@ -26,7 +26,7 @@ if(isset($_POST['myData'])){
 
     $delivery_details = $obj->delivery_details;
 
-    $sql = "INSERT INTO `order_main` (`order_id`, `total_price`) VALUES ('$order_id', '$total_amount')";
+    $sql = "INSERT INTO `order_main` (`order_id`, `total_price`,`user_id`) VALUES ('$order_id', '$total_amount','$user_id')";
     if(mysqli_query($con, $sql)){
         $sql = "INSERT INTO `pick_up_details` (`order_id`, `name`, `address`, `pin`, `phone`, `landmark`) VALUES ('$order_id', '$pick_name', '$pick_address', '$pick_pincode', '$pick_phone', '$pick_landmark')";
         if(mysqli_query($con, $sql)){
