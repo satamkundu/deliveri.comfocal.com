@@ -1,4 +1,7 @@
-<?php if(!session_start())session_start(); ?>
+<?php 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+} ?>
 <?php include_once 'includes/top.php'; ?>
 <style>
     * {
