@@ -70,8 +70,6 @@ if(isset($_POST['track_id'])){
                 <?php
             }
             echo "</table>";
-            // $status = $result['status'];
-            // echo "Order is ".ucfirst($status);
         }else{
             echo "You don't have any order";
         }        
