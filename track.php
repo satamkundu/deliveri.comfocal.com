@@ -17,7 +17,8 @@
                 type: "post",
                 data: {"track_id":$track_id} ,
                 success: function (response) {
-                    $(".track_result").text(response);
+                    $(".track_result").text('');
+                    $('.modal-content').html(response);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown);

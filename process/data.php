@@ -52,13 +52,28 @@ if(isset($_POST['myData'])){
 
 if(isset($_POST['track_id'])){
     $track_id = $_POST['track_id'];
-    if($res=mysqli_query($con,"SELECT status from order_main WHERE order_id='$track_id'")){
+    if($res=mysqli_query($con,"SELECT name, order_status from delivery_details WHERE order_id='$track_id'")){
         if(mysqli_num_rows($res)>0){
-            $result = mysqli_fetch_array($res);
-            $status = $result['status'];
-            echo "Order is ".ucfirst($status);
+            ?>
+            <table class="table table-sm">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
+                </tr>
+            <?php
+            while($result = mysqli_fetch_array($res)){
+                ?>
+                <tr>
+                    <th><?=$result['name']?></th>
+                    <th><?=$result['order_status']?></th>
+                </tr>
+                <?php
+            }
+            echo "</table>";
+            // $status = $result['status'];
+            // echo "Order is ".ucfirst($status);
         }else{
-            echo "Please Give a Valid Tracking ID";
+            echo "You don't have any order";
         }        
     }else{
         echo "Please Give a Valid Tracking ID";
