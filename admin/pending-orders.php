@@ -16,7 +16,12 @@ if(strlen($_SESSION['alogin'])==0){
 	<link type="text/css" href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 	<link type="text/css" href="css/theme.css" rel="stylesheet">
 	<link type="text/css" href="images/icons/css/font-awesome.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/loading.css">
 	<link type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet'>
+
+	
+
+
 	<script language="javascript" type="text/javascript">
 		var popUpWin=0;
 		function popUpWindow(URLStr, left, top, width, height){
@@ -29,6 +34,7 @@ if(strlen($_SESSION['alogin'])==0){
 </head>
 <body>
 <?php include('include/header.php');?>
+<div class="loading">Loading&#8230;</div>
 	<div class="wrapper">
 		<div class="container">
 			<div class="row">
@@ -43,7 +49,7 @@ if(strlen($_SESSION['alogin'])==0){
 							<?php if(isset($_GET['del'])){?>
 							<div class="alert alert-error">
 								<button type="button" class="close" data-dismiss="alert">×</button>
-								<strong>Oh snap!</strong> 	<?php echo htmlentities($_SESSION['delmsg']);?><?php echo htmlentities($_SESSION['delmsg']="");?>
+								<strong>Oh snap!</strong><?php echo htmlentities($_SESSION['delmsg']);?><?php echo htmlentities($_SESSION['delmsg']="");?>
 							</div>
 							<?php } ?>
 							<br />
@@ -54,24 +60,54 @@ if(strlen($_SESSION['alogin'])==0){
 									<th>OrderID</th>						
 									<th>Amount </th>
 									<th>Order Date</th>
+									<th>Payment Status</th>
+									<?=($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2)?"<th>Order Goes To</th>":"" ?>									
 									<th>Action</th>
 									</tr>
 								</thead>								
 								<tbody>
 									<?php 
 									$st='delivered';
-									$query=mysqli_query($con,"SELECT *  FROM `order_main` WHERE status != '$st' ORDER BY `order_main`.`datetime` DESC");
+									$user_id = $_SESSION['id'];
+									
+									if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2)
+										$query=mysqli_query($con,"SELECT *  FROM `order_main` WHERE status != '$st' ORDER BY `order_main`.`datetime` DESC");
+									else
+										$query=mysqli_query($con,"SELECT *  FROM `order_main` WHERE status != '$st' AND order_from = '$user_id' ORDER BY `order_main`.`datetime` DESC");
 									$cnt=1;
 									while($row=mysqli_fetch_array($query)){
-								?>										
+									?>										
 										<tr>
-										<td><?php echo htmlentities($cnt);?></td>
+											<td><?php echo htmlentities($cnt);?></td>
 											<td><?php echo htmlentities($row['order_id']);?></td>
 											<td><?php echo htmlentities($row['total_price']);?></td>					
 											<td><?php echo htmlentities($row['datetime'])?></td>
-											<td><a href="updateorder.php?oid=<?php echo htmlentities($row['order_id']);?>" title="Update order" target="_blank"><i class="icon-edit"></i></a>
+											<td>
+												<input type="hidden" id="ord_id<?=$cnt?>" value="<?=$row['order_id']?>">
+												<select style="width:9rem !important" class="fontkink" id="<?=$cnt?>" onchange="change_payment_status(this.id)">
+													<option value="pending" <?=($row['payment_status']=="pending")?'selected':''?>>Pending</option>
+													<option value="success" <?=($row['payment_status']=="success")?'selected':''?>>Success</option>												
+												</select>
 											</td>
-											</tr>
+											<?php 
+												if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2){
+											?>
+											<td>
+												<select style="width:9rem !important" class="fontkink" id="o<?=$cnt?>" onchange="change_order_for(this.id)">
+												<?php
+													$query_admin=mysqli_query($con,"SELECT *  FROM `admin`");
+													while($row_admin=mysqli_fetch_array($query_admin)){
+												?>
+													<option value="<?=$row_admin['id']?>" <?=($row_admin['id']==$row['order_from'])?'selected':''?>><?=$row_admin['name']?></option>
+												<?php } ?>
+												</select>
+											</td>
+											<?php } ?>
+
+											<td>
+												<a href="updateorder.php?oid=<?php echo htmlentities($row['order_id']);?>" title="Update order" target="_blank"><i class="icon-edit"></i></a>
+											</td>
+										</tr>
 										<?php $cnt=$cnt+1; } ?>
 										</tbody>
 								</table>
@@ -97,7 +133,36 @@ if(strlen($_SESSION['alogin'])==0){
 			$('.dataTables_paginate > a').wrapInner('<span />');
 			$('.dataTables_paginate > a:first-child').append('<i class="icon-chevron-left shaded"></i>');
 			$('.dataTables_paginate > a:last-child').append('<i class="icon-chevron-right shaded"></i>');
-		} );
+			
+			$('.loading').hide();
+		});
+
+		function change_payment_status(id){
+			$('.loading').show(); 			
+			$.ajax({
+				type: "POST",
+				url: "process/process.php",
+				data: {ord_id:$('#ord_id'+id).val(),payment_status:$('#'+id).val(),do_for:"change_payment_status"},    
+				success: function(result){
+					// console.log(result);
+					location.reload();
+				}
+			});
+		}
+
+		function change_order_for(id){
+			// $('.loading').show(); 
+			var id = id.substring(1);
+			$.ajax({
+				type: "POST",
+				url: "process/process.php",
+				data: {ord_id:$('#ord_id'+id).val(),ord_for:$('#o'+id).val(),do_for:"change_order_for"},    
+				success: function(result){
+					// console.log(result);
+					location.reload();
+				}
+			});
+		}
 	</script>
 </body>
 <?php } ?>

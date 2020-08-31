@@ -1,3 +1,4 @@
+<?php $user_id = $_SESSION['id']; ?>
 <div class="span3">
 	<div class="sidebar">
 		<ul class="widget widget-menu unstyled">
@@ -14,30 +15,26 @@
 								$from=date('Y-m-d')." ".$f1;
 								$t1="23:59:59";
 								$to=date('Y-m-d')." ".$t1;
-								$result = mysqli_query($con,"SELECT * FROM order_main where datetime Between '$from' and '$to'");
+								if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2)
+									$result = mysqli_query($con,"SELECT * FROM order_main where datetime Between '$from' and '$to'");
+								else
+									$result = mysqli_query($con,"SELECT * FROM order_main where order_from = $user_id AND datetime Between '$from' and '$to'");
 								$num_rows1 = mysqli_num_rows($result);	
 							?>
 							<b class="label orange pull-right"><?php echo htmlentities($num_rows1); ?></b>
 						</a>
 					</li>
 					<li>
-						<a href="pending-orders.php"><i class="icon-tasks"></i>Pending Orders
+						<a href="pending-orders.php"><i class="icon-tasks"></i>All Orders
 							<?php	
-								$status='delivered';									 
-								$ret = mysqli_query($con,"SELECT * FROM order_main where status!='$status' || status is null");
+								// $status='delivered';	
+								if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2)								 
+									$ret = mysqli_query($con,"SELECT * FROM order_main");
+								else
+									$ret = mysqli_query($con,"SELECT * FROM order_main where order_from = $user_id ");
 								$num = mysqli_num_rows($ret);	
 							?>
 							<b class="label orange pull-right"><?php echo htmlentities($num); ?></b>
-						</a>
-					</li>
-					<li>
-						<a href="delivered-orders.php"><i class="icon-inbox"></i>Delivered Orders
-							<?php	
-								$status='delivered';									 
-								$rt = mysqli_query($con,"SELECT * FROM order_main where status='$status'");
-								$num1 = mysqli_num_rows($rt);
-							?>
-							<b class="label green pull-right"><?php echo htmlentities($num1); ?></b>
 						</a>
 					</li>
 				</ul>

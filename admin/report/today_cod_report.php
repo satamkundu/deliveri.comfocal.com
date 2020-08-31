@@ -1,4 +1,5 @@
-<?php require_once('../include/top.php'); ?>
+<?php if(!isset($_SESSION)) session_start();
+ require_once('../include/top.php'); ?>
 <script>    
     function do_print(){
         window.print();
@@ -13,6 +14,7 @@
 </style>
 <body onload="do_print()">
 <?php
+$user_id = $_SESSION['id'];
 $cnt = 1;
 
 if(isset($_GET['from']) && isset($_GET['to'])){
@@ -20,7 +22,7 @@ if(isset($_GET['from']) && isset($_GET['to'])){
         $from_date = $_GET['from'];
         $to_date = $_GET['to'];
         //Data between two days
-        $sql = "SELECT * FROM `order_main` WHERE DATE(`datetime`) BETWEEN '$from_date' AND '$to_date';";
+        $sql = "SELECT * FROM `order_main` WHERE order_from = $user_id AND DATE(`datetime`) BETWEEN '$from_date' AND '$to_date';";
     }else{
         echo "<center><h1>Choose Proper Date</h1></center>"; 
         exit();
@@ -29,10 +31,10 @@ if(isset($_GET['from']) && isset($_GET['to'])){
 if(isset($_GET['for'])){
     if($_GET['for']=='today'){
         //Today data
-        $sql = "SELECT * FROM `order_main` WHERE DATE(`datetime`) = CURDATE()";
+        $sql = "SELECT * FROM `order_main` WHERE order_from = $user_id AND DATE(`datetime`) = CURDATE()";
     }else if($_GET['for']=='yesterday'){
         //Yesterday data
-        $sql = "SELECT * FROM `order_main` WHERE DATE(`datetime`) = CURDATE() - 1";
+        $sql = "SELECT * FROM `order_main` WHERE order_from = $user_id AND DATE(`datetime`) = CURDATE() - 1";
     }
 }
 
@@ -40,7 +42,7 @@ if(isset($_GET['orderid'])){
     if(!empty($_GET['orderid'])){
         $orderid = $_GET['orderid'];
         //for individual
-        $sql = "SELECT * FROM `order_main` WHERE `order_id` = '$orderid'";
+        $sql = "SELECT * FROM `order_main` WHERE order_from = $user_id AND `order_id` = '$orderid'";
     }else{
         echo "<center><h1>Choose Proper Date</h1></center>"; 
         exit();

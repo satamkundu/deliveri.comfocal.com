@@ -5,7 +5,12 @@
 			<a class="brand" href="index.html">ComFoCall – A Call of Comfort | Admin</a>
 			<div class="nav-collapse collapse navbar-inverse-collapse">
 				<ul class="nav pull-right">
-					<li><a href="#">Admin</a></li>
+					<?php
+					$user_id = $_SESSION['id'];
+					$res = mysqli_query($con, "SELECT name FROM admin WHERE id = $user_id");
+					$row = mysqli_fetch_assoc($res);
+					?>
+					<li><a href="#"><?=$row['name']?></a></li>
 					<li class="nav-user dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<img src="images/user.png" class="nav-avatar" />

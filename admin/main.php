@@ -20,21 +20,21 @@ if(strlen($_SESSION['alogin'])==0){
 <body>
 <?php include('include/header.php');?>
 <?php
-//today
-if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery_details WHERE DATE(`datetime`) = CURDATE()")))
-    $today_cod = $res['SUM(cod_self)'];
+// //today
+// if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery_details WHERE DATE(`datetime`) = CURDATE()")))
+//     $today_cod = $res['SUM(cod_self)'];
 
-//yesterday
-if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery_details WHERE DATE(`datetime`) = CURDATE()-1")))
-    $yesterday_cod = $res['SUM(cod_self)'];
+// //yesterday
+// if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery_details WHERE DATE(`datetime`) = CURDATE()-1")))
+//     $yesterday_cod = $res['SUM(cod_self)'];
 
-//This month
-if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery_details WHERE MONTH(datetime) = MONTH(NOW()) AND YEAR(datetime) = YEAR(NOW())")))
-    $this_month_cod = $res['SUM(cod_self)'];
+// //This month
+// if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery_details WHERE MONTH(datetime) = MONTH(NOW()) AND YEAR(datetime) = YEAR(NOW())")))
+//     $this_month_cod = $res['SUM(cod_self)'];
 
-//Total COD
-if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery_details")))
-    $total_cod = $res['SUM(cod_self)'];
+// //Total COD
+// if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery_details")))
+//     $total_cod = $res['SUM(cod_self)'];
 
 
 ?>
@@ -44,40 +44,14 @@ if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery
 			<div class="row">
 			<?php include('include/sidebar.php');?>	
             
-            <div class="span9">
-            <!--COD REPORT start-->
-                <!-- <div class="content">
-                    <div class="module">
-                        <div class="module-head">
-                            <h3>COD Value</h3>
-                        </div>
-                        <div class="module-body">
-                            <div style="width:33%;display:inline-block">
-                                <p>Today's COD value : <?=$today_cod?></p>                                
-                            </div>
-                            <div style="width:33%;display:inline-block">
-                                <p>Yesterday's COD value : <?=($yesterday_cod=="NULL" || $yesterday_cod==0)?0:$yesterday_cod?></p>
-                            </div>
-                            <div style="width:33%;display:inline-block">
-                                <p>This Month's COD value : <?=$this_month_cod?></p>
-                            </div>
-                            <div style="width:33%;display:inline-block">
-                                <p>Total COD value : <?=$total_cod?></p>
-                            </div>
-                            <div style="width:33%;display:inline-block">
-                                <a href='report/today_cod_report.php' target="_blank"><button>Print Today's COD Report</button></a>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
+            <div class="span9">            
                 <div class="content">
                     <div class="module">
                         <div class="module-head">
                             <h3>COD Value</h3>
                         </div>                        
                         <div class="module-body">
-                            <div style="width:24%;display:inline-block">
+                            <!-- <div style="width:24%;display:inline-block">
                                 <p>Today's : <?=$today_cod?></p>                                
                             </div>
                             <div style="width:24%;display:inline-block">
@@ -88,7 +62,7 @@ if($res=mysqli_fetch_array(mysqli_query($con,"SELECT SUM(cod_self) FROM delivery
                             </div>
                             <div style="width:24%;display:inline-block">
                                 <p>Total : <?=$total_cod?></p>
-                            </div>
+                            </div> -->
                             <div style="margin-bottom:3rem">
                                 <div>
                                     <a style="float:left" href='report/today_cod_report.php?for=today' target="_blank"><button>Print Today's COD Report</button></a>

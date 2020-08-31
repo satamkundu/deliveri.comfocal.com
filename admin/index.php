@@ -10,6 +10,7 @@ if(isset($_POST['submit'])){
 		$extra="main.php";
 		$_SESSION['alogin']=$_POST['username'];
 		$_SESSION['id']=$num['id'];
+		$_SESSION['admin_type'] = $num['admin_type_id'];
 		$host=$_SERVER['HTTP_HOST'];
 		$uri=rtrim(dirname($_SERVER['PHP_SELF']),'/\\');
 		header("location:http://$host$uri/$extra");
