@@ -41,10 +41,10 @@ if(strlen($_SESSION['alogin'])==0){
       <td class="fontkink1" ><b>At Date:</b></td>
       <td  class="fontkink"><?php echo $row['datetime'];?></td>
     </tr>
-     <tr height="20">
+     <!-- <tr height="20">
       <td  class="fontkink1"><b>Status:</b></td>
       <td  class="fontkink"><?php echo $row['status'];?></td>
-    </tr>
+    </tr> -->
     <tr>
       <td colspan="2"><hr /></td>
     </tr>
@@ -76,12 +76,13 @@ if(strlen($_SESSION['alogin'])==0){
             <th>#</th>
             <th class="fontkink2">Name</th>
             <th class="fontkink2">Landmark</th>
-            <th class="fontkink2">Address</th>
-            <th class="fontkink2">Pin</th>
+            <th class="fontkink2">Address</th>            
             <th class="fontkink2">Phone</th>
             <th class="fontkink2">Weight</th>
             <th class="fontkink2">Product Value</th>
-            <th class="fontkink2">Status</th>
+            <th class="fontkink2">Order Status</th>
+            <th class="fontkink2">COD</th>
+            <th class="fontkink2">COD Status</th>
           </tr>
     <?php
       while($num1=mysqli_fetch_array($rt1)){?>
@@ -89,8 +90,7 @@ if(strlen($_SESSION['alogin'])==0){
             <td><?=$counter?></td>
             <td class="fontkink2"><?=$num1['name']?></td>
             <td class="fontkink2"><?=$num1['landmark']?></td>
-            <td class="fontkink2"><?=$num1['address']?></td>
-            <td class="fontkink2"><?=$num1['pin']?></td>
+            <td class="fontkink2"><?=$num1['address'].', '.$num1['pin']?></td>
             <td class="fontkink2"><?=$num1['phone']?></td>
             <td class="fontkink2"><?=$num1['weight'].".".$num1['weight_gm']?></td>
             <td class="fontkink2"><?=$num1['aprx_amt']?></td>
@@ -103,6 +103,20 @@ if(strlen($_SESSION['alogin'])==0){
                 <option value="delivered" <?=($num1['order_status']=="delivered")?'selected':''?>>Delivered</option>
                 <option value="cancel" <?=($num1['order_status']=="cancel")?'selected':''?>>Cancel</option>
               </select>
+            </td>
+            <td class="fontkink2"><?=$num1['cod_self']?></td>
+            <td>
+            <?php
+            if($num1['cod_self'] > 0){
+                ?>
+                <input type="hidden" id="o_id<?=$counter?>" value="<?=$num1['delivery_id']?>">
+                <select name="cod-status" class="fontkink" id="o_<?=$counter?>" onchange="change_cod_status(this.id)">
+                  <option value="">Select Status</option>
+                  <option value="pending" <?=($num1['cod_status']=="pending")?'selected':''?>>Pending</option>
+                  <option value="success" <?=($num1['cod_status']=="success")?'selected':''?>>Success</option>                  
+                  <option value="cancel" <?=($num1['cod_status']=="cancel")?'selected':''?>>Cancel</option>
+                </select>
+           <?php }  ?>
             </td>
           </tr>
         <?php $counter++; }  ?>
@@ -133,6 +147,19 @@ function change_deli_status(id){
     type: "POST",
     url: "process/process.php",
     data: {id:$('#id'+id).val(),status:$('#'+id).val()},    
+    success: function(result){
+      location.reload();
+    }
+  });
+}
+
+function change_cod_status(id){
+  $('.loading').show(); 
+  var id = id.slice(2);
+  $.ajax({
+    type: "POST",
+    url: "process/process.php",
+    data: {o_id:$('#o_id'+id).val(),cod_status:$('#o_'+id).val()},    
     success: function(result){
       location.reload();
     }

@@ -69,7 +69,7 @@ if(strlen($_SESSION['alogin'])==0){
                                     <a style="float:right" href='report/today_cod_report.php?for=yesterday' target="_blank"><button>Print Yesterday's COD Report</button></a>
                                 </div>
                             </div>
-
+                                <hr>
                             <div>
                                 <div style="width:27%;display:inline-block">
                                     <p><input id="cod_individual" type="number" placeholder="Enter OrderID"></p>
@@ -78,7 +78,7 @@ if(strlen($_SESSION['alogin'])==0){
                                     <button style="margin-top:-1rem" onclick="go_cod_individual()">Generate COD Report</button>
                                 </div>
                             </div>
-                            
+                            <hr>
                             <div style="width:33%;display:inline-block">
                                 <p><b>From </b><input id="from_date_cod" type="date" name="from_date"></p>                                
                             </div>
@@ -87,7 +87,23 @@ if(strlen($_SESSION['alogin'])==0){
                             </div>
                             <div style="width:33%;display:inline-block">
                                 <button style="margin-top:-1rem" onclick="go_cod_summary()">Generate COD Report</button>
-                            </div>                            
+                            </div>
+                            <hr>
+                            <?php if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2){ ?>
+                            <div style="width:99%;display:inline-block">
+                                <select style="display:inline-block" class="fontkink" id="ind_user">
+                                    <?php
+                                    $query_admin=mysqli_query($con,"SELECT *  FROM `admin`");
+                                        while($row_admin=mysqli_fetch_array($query_admin)){
+                                    ?>
+                                        <option value="<?=$row_admin['id']?>"><?=$row_admin['name']?></option>
+                                    <?php } ?>
+                                </select> 
+                                <p style="display:inline-block"><b>From </b><input id="ind_from_date_cod" type="date" name="from_date"></p>
+                                <p style="display:inline-block"><b>To </b><input id="ind_to_date_cod" type="date" name="to_date"></p>
+                                <button style="margin-top:-1rem;display:inline-block" onclick="ind_go_cod_summary()">Generate COD Report</button>
+                            </div>                           
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -108,7 +124,7 @@ if(strlen($_SESSION['alogin'])==0){
                                     <a style="float:right" href='report/order_summary.php?for=yesterday' target="_blank"><button>Print Yesterday's Order summary</button></a>
                                 </div>
                             </div>
-
+                            <hr>
                             <div>
                                 <div style="width:27%;display:inline-block">
                                     <p><input id="os_individual" type="number" placeholder="Enter OrderID"></p>
@@ -117,7 +133,7 @@ if(strlen($_SESSION['alogin'])==0){
                                     <button style="margin-top:-1rem" onclick="go_summary_individual()">Generate Order summary</button>
                                 </div>
                             </div>
-                            
+                            <hr>
                             <div style="width:33%;display:inline-block">
                                 <p><b>From </b><input id="from_date" type="date" name="from_date"></p>                                
                             </div>
@@ -126,7 +142,23 @@ if(strlen($_SESSION['alogin'])==0){
                             </div>
                             <div style="width:33%;display:inline-block">
                                 <button onclick="go_summary()">Generate Order summary</button>
-                            </div>                            
+                            </div>  
+                            <hr>  
+                            <?php if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2){ ?>
+                            <div style="width:99%;display:inline-block">
+                                <select style="display:inline-block" class="fontkink" id="ind_user_ord">
+                                    <?php
+                                    $query_admin=mysqli_query($con,"SELECT *  FROM `admin`");
+                                        while($row_admin=mysqli_fetch_array($query_admin)){
+                                    ?>
+                                        <option value="<?=$row_admin['id']?>"><?=$row_admin['name']?></option>
+                                    <?php } ?>
+                                </select> 
+                                <p style="display:inline-block"><b>From </b><input id="ind_from_date" type="date" name="from_date"></p>
+                                <p style="display:inline-block"><b>To </b><input id="ind_to_date" type="date" name="to_date"></p>
+                                <button style="margin-top:-1rem;display:inline-block" onclick="ind_go_summary()">Generate COD Report</button>
+                            </div>                           
+                            <?php } ?>                        
                         </div>
                     </div>
                 </div>            
@@ -154,6 +186,16 @@ if(strlen($_SESSION['alogin'])==0){
             alert('Please fill currect date');
     }
 
+    function ind_go_summary(){
+        let from_date = document.getElementById('ind_from_date').value;
+        let to_date = document.getElementById('ind_to_date').value;
+        let ind_user = document.getElementById('ind_user_ord').value;
+        if(from_date != "" && to_date != ""){
+            window.open('report/order_summary.php?ind_from='+from_date+'&ind_to='+to_date+'&ind_user='+ind_user);
+        }else
+            alert('Please fill currect date');
+    }
+
     function go_summary_individual(){
         let os_individual = document.getElementById('os_individual').value;
         if(os_individual != ""){
@@ -167,6 +209,16 @@ if(strlen($_SESSION['alogin'])==0){
         let to_date = document.getElementById('to_date_cod').value;
         if(from_date != "" && to_date != ""){
             window.open('report/today_cod_report.php?from='+from_date+'&to='+to_date);
+        }else
+            alert('Please fill currect date');
+    }
+
+    function ind_go_cod_summary(){
+        let ind_from_date = document.getElementById('ind_from_date_cod').value;
+        let ind_to_date = document.getElementById('ind_to_date_cod').value;
+        let ind_user = document.getElementById('ind_user').value;
+        if(ind_from_date != "" && ind_to_date != ""){
+            window.open('report/today_cod_report.php?ind_from='+ind_from_date+'&ind_to='+ind_to_date+'&ind_user='+ind_user);
         }else
             alert('Please fill currect date');
     }

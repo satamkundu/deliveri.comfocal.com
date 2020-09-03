@@ -45,7 +45,7 @@ if(strlen($_SESSION['alogin'])==0){
 							<?php if(isset($_GET['del'])){?>
 								<div class="alert alert-error">
 									<button type="button" class="close" data-dismiss="alert">×</button>
-									<strong>Oh snap!</strong> 	<?php echo htmlentities($_SESSION['delmsg']);?><?php echo htmlentities($_SESSION['delmsg']="");?>
+									<strong>Oh snap!</strong><?php echo htmlentities($_SESSION['delmsg']);?><?php echo htmlentities($_SESSION['delmsg']="");?>
 								</div>
 							<?php } ?>
 								<br />
@@ -123,6 +123,7 @@ if(strlen($_SESSION['alogin'])==0){
 	<script src="scripts/datatables/jquery.dataTables.js"></script>
 	<script>
 		$(document).ready(function() {
+			$('.loading').hide();
 			$('.datatable-1').dataTable();
 			$('.dataTables_paginate').addClass("btn-group datatable-pagination");
 			$('.dataTables_paginate > a').wrapInner('<span />');

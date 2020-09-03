@@ -49,6 +49,19 @@ if(isset($_GET['orderid'])){
     }
 }
 
+if(isset($_GET['ind_from']) && isset($_GET['ind_to']) && isset($_GET['ind_user'])){
+    if(!empty($_GET['ind_from']) && !empty($_GET['ind_to'])){
+        $from_date = $_GET['ind_from'];
+        $to_date = $_GET['ind_to'];
+        $ind_user = $_GET['ind_user'];
+        //Data between two days
+        $sql = "SELECT * FROM `order_main` WHERE order_from = $ind_user AND DATE(`datetime`) BETWEEN '$from_date' AND '$to_date';";
+    }else{
+        echo "<center><h1>Choose Proper Date</h1></center>"; 
+        exit();
+    }
+}
+
 $result = mysqli_query($con, $sql);
 if (mysqli_num_rows($result) > 0) {
     ?>

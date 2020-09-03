@@ -13,6 +13,7 @@ if(isset($_POST['myData'])){
     $total_amount = test_input($obj->amount);
     $delivery_options = test_input($obj->delivery_option);
     $user_id = test_input($obj->user_id);
+    $user_admin_type = test_input($obj->user_admin_type);
 
     if($delivery_options == "regular") $delivery_option_id = 1;
     if($delivery_options == "same") $delivery_option_id = 2;
@@ -26,7 +27,7 @@ if(isset($_POST['myData'])){
 
     $delivery_details = $obj->delivery_details;
 
-    $sql = "INSERT INTO `order_main` (`order_id`, `total_price`,`user_id`) VALUES ('$order_id', '$total_amount','$user_id')";
+    $sql = "INSERT INTO `order_main` (`order_id`, `total_price`,`user_id`,`order_from`) VALUES ('$order_id', '$total_amount','$user_id', '$user_admin_type')";
     if(mysqli_query($con, $sql)){
         $sql = "INSERT INTO `pick_up_details` (`order_id`, `name`, `address`, `pin`, `phone`, `landmark`) VALUES ('$order_id', '$pick_name', '$pick_address', '$pick_pincode', '$pick_phone', '$pick_landmark')";
         if(mysqli_query($con, $sql)){
@@ -77,4 +78,5 @@ if(isset($_POST['track_id'])){
         echo "Please Give a Valid Tracking ID";
     }
 }
+mysqli_close($con);
 ?>

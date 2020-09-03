@@ -99,12 +99,18 @@ if (session_status() == PHP_SESSION_NONE) {
             </div>
             <?php
                 $user_id = 0;
-                if(isset($_SESSION["id"]) && $_SESSION["username"] ){
+                $user_admin_type = 0;
+                if(isset($_SESSION["id"]) && isset($_SESSION["username"]) ){
+                    include_once 'includes/config.php';
                     $user_id = $_SESSION["id"];
+                    $res1 = mysqli_query($con, "SELECT admin_type_id FROM admin WHERE id = '$user_id'");
+                    $row1 = mysqli_fetch_assoc($res1);
+                    $user_admin_type = $row1['admin_type_id'];
+                    mysqli_close($con);
             ?>
             <div class="col-md-6">
                 <p style="float: right;padding: 2rem 2rem;">
-                    <i class="fa fa-user pr-2" aria-hidden="true"></i><b class="pr-5"><?php echo htmlspecialchars($_SESSION["username"]); ?></b>
+                    <i class="fa fa-user pr-2" aria-hidden="true"></i><b class="pr-5"><?= (isset($_SESSION["username"]))?htmlspecialchars($_SESSION["username"]):''; ?></b>
                     <a href="users/logout.php" class="btn btn-danger">Sign Out</a>
                 </p>
             </div>
@@ -135,11 +141,11 @@ if (session_status() == PHP_SESSION_NONE) {
                             <div class="col-md-6 pick-box">
                                 <form class="text-center border border-light" action="#!">
                                     <p class="h4 mb-4 pick-head">Pick Up Details</p>                            
-                                    <input type="text" id="p_name" class="form-control mb-2" placeholder="Name" >
-                                    <input type="number" id="p_phone" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Phone" >
-                                    <textarea name="add" id="p_add" class="form-control mb-2" placeholder="Address..." ></textarea>
-                                    <input type="text" id="p_landmark" class="form-control mb-2" placeholder="Landmark" >
-                                    <input type="number" id= "p_pin" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Pincode" >
+                                    <input type="text" id="p_name" class="form-control mb-2" placeholder="Name" value="<?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"Comfocall Burrabazar":'':'' ?>">
+                                    <input type="number" id="p_phone" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Phone" value="<?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"6290027288":'':'' ?>" >
+                                    <textarea name="add" id="p_add" class="form-control mb-2" placeholder="Address..."><?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"195 Maharshi Devendra Road Kolkata":'':'' ?></textarea>
+                                    <input type="text" id="p_landmark" class="form-control mb-2" placeholder="Landmark"  value="<?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"Khotta Bazar":'':'' ?>">
+                                    <input type="number" id= "p_pin" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Pincode"  value="<?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"700006":'':'' ?>">
                                 </form>
                                 <button id="back-1" type="button" class="back-btn btn btn-danger">Back</button>
                                 <button id="next-1" style="float:right" type="button" class="next-btn btn btn-success">Next</button>
@@ -267,7 +273,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 <div class="col-md-6 text-center">
                                     <p class="upi-code"><b>UPI : 9088337606@okbizaxis</b></p>
                                     <div style="color:blue;padding-bottom:1rem">OR</div>                                    
-                                    <table class="bank-details"><tr><th>ACCOUNT NUMBER &nbsp;&nbsp;: </th><td>50302496616</td>
+                                    <table class="bank-details"><tr><th>ACCOUNT NUMBER &nbsp;&nbsp;: &nbsp;&nbsp;&nbsp;&nbsp;</th><td>50302496616</td>
                                     <tr><th>BANK: </th><td>ALLAHABAD BANK</td>
                                     <tr><th>BRANCH: </th><td>HOWRAH BOTANICAL GARDEN</td>
                                     <tr><th>IFSC CODE: </th><td>ALLA0211813</td>
@@ -320,7 +326,8 @@ if (session_status() == PHP_SESSION_NONE) {
         delivery_details :[],
         order_id:Math.floor(Math.random()*900000000) + 100000000,
         amount:"",
-        user_id:<?=$user_id?>
+        user_id:<?=$user_id?>,
+        user_admin_type:<?=$user_admin_type?>
     }
 
     let option;
@@ -370,7 +377,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 error = 1;
                 return false;
             }else{
-                if( !p_name.match('^[a-zA-Z ]{3,16}$') ){
+                if( !p_name.match('^[a-zA-Z ]{3,50}$') ){
                     // alert('Please Give a Proper Name');
                     Swal.fire({
                         icon: 'error',
@@ -762,7 +769,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     hand_written.push('<tr>'+
                             '<th>'+cnt+'</th>'+
                             '<td style="width:30rem;padding:1.5rem;border-style: dotted;"><b>From : </b><br>'+ details.pick_up_details.name +'<br>'+ details.pick_up_details.address+', '+details.pick_up_details.pincode+'<br>'+ details.pick_up_details.landmark+'</td>'+
-                            '<td style="width:30rem;padding:1.5rem;border-style: dotted;"><b>To : </b><br>'+ details.delivery_details[i].name +'<br>'+ details.delivery_details[i].add+', '+details.delivery_details[i].pin+'<br>'+ details.delivery_details[i].landmark+'</td>'+
+                            '<td style="width:30rem;padding:1.5rem;border-style: dotted;"><b>To : </b><br>'+ details.delivery_details[i].name +'<br>'+ details.delivery_details[i].add+', '+details.delivery_details[i].pin+'<br>'+ details.delivery_details[i].landmark+'<br>'+ details.delivery_details[i].phone+'</td>'+
                         '</tr>');
                     cnt++;
                 }
