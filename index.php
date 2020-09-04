@@ -103,10 +103,9 @@ if (session_status() == PHP_SESSION_NONE) {
                 if(isset($_SESSION["id"]) && isset($_SESSION["username"]) ){
                     include_once 'includes/config.php';
                     $user_id = $_SESSION["id"];
-                    $res1 = mysqli_query($con, "SELECT admin_type_id FROM admin WHERE id = '$user_id'");
+                    $res1 = mysqli_query($con, "SELECT admin_id FROM users WHERE id = '$user_id'");
                     $row1 = mysqli_fetch_assoc($res1);
-                    $user_admin_type = $row1['admin_type_id'];
-                    mysqli_close($con);
+                    $user_admin_type = $row1['admin_id'];                    
             ?>
             <div class="col-md-6">
                 <p style="float: right;padding: 2rem 2rem;">
@@ -134,6 +133,15 @@ if (session_status() == PHP_SESSION_NONE) {
                     </div>
                 </div>
 
+                <?php
+                if(isset($_SESSION["id"])){
+                    $res2 = mysqli_query($con, "SELECT * FROM user_address WHERE user_id = '$user_id'");                    
+                    $row2 = mysqli_fetch_assoc($res2);
+                    extract($row2);
+                    mysqli_close($con);
+                }
+                ?>
+
                 <div class="fieldset">
                     <div class="pick_up_details" style="display:none">
                         <div class="row">
@@ -141,11 +149,11 @@ if (session_status() == PHP_SESSION_NONE) {
                             <div class="col-md-6 pick-box">
                                 <form class="text-center border border-light" action="#!">
                                     <p class="h4 mb-4 pick-head">Pick Up Details</p>                            
-                                    <input type="text" id="p_name" class="form-control mb-2" placeholder="Name" value="<?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"Comfocall Burrabazar":'':'' ?>">
-                                    <input type="number" id="p_phone" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Phone" value="<?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"6290027288":'':'' ?>" >
-                                    <textarea name="add" id="p_add" class="form-control mb-2" placeholder="Address..."><?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"195 Maharshi Devendra Road Kolkata":'':'' ?></textarea>
-                                    <input type="text" id="p_landmark" class="form-control mb-2" placeholder="Landmark"  value="<?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"Khotta Bazar":'':'' ?>">
-                                    <input type="number" id= "p_pin" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Pincode"  value="<?=(isset($_SESSION["username"]))?($_SESSION["username"] == 'burrabazar@comfocall.co.in')?"700006":'':'' ?>">
+                                    <input type="text" id="p_name" class="form-control mb-2" placeholder="Name" value="<?=(isset($_SESSION["id"]))?$name:'' ?>">
+                                    <input type="number" id="p_phone" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Phone" value="<?=(isset($_SESSION["id"]))?$phone:'' ?>" >
+                                    <textarea name="add" id="p_add" class="form-control mb-2" placeholder="Address..."><?=(isset($_SESSION["id"]))?$address:'' ?></textarea>
+                                    <input type="text" id="p_landmark" class="form-control mb-2" placeholder="Landmark"  value="<?=(isset($_SESSION["id"]))?$landmark:'' ?>">
+                                    <input type="number" id= "p_pin" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Pincode"  value="<?=(isset($_SESSION["id"]))?$pincode:'' ?>">
                                 </form>
                                 <button id="back-1" type="button" class="back-btn btn btn-danger">Back</button>
                                 <button id="next-1" style="float:right" type="button" class="next-btn btn btn-success">Next</button>
@@ -241,7 +249,7 @@ if (session_status() == PHP_SESSION_NONE) {
             </div>
         </div>
     </div>
-    <div class="final_message" style="margin-bottom:6rem;" style="display:none">
+    <div class="final_message" style="margin-bottom:6rem;display:none;">
         <div class="accordion" id="accordionExample">
             <div class="card">
                 <div class="card-header text-center" id="headingOne">
@@ -329,6 +337,8 @@ if (session_status() == PHP_SESSION_NONE) {
         user_id:<?=$user_id?>,
         user_admin_type:<?=$user_admin_type?>
     }
+
+    console.log(details.user_id+" "+details.user_admin_type);
 
     let option;
     let p_name, p_pincode, p_phone, p_address, p_landmark;
@@ -768,7 +778,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 for(var i = 0; i < details.delivery_details.length; i++){
                     hand_written.push('<tr>'+
                             '<th>'+cnt+'</th>'+
-                            '<td style="width:30rem;padding:1.5rem;border-style: dotted;"><b>From : </b><br>'+ details.pick_up_details.name +'<br>'+ details.pick_up_details.address+', '+details.pick_up_details.pincode+'<br>'+ details.pick_up_details.landmark+'</td>'+
+                            '<td style="width:30rem;padding:1.5rem;border-style: dotted;"><b>From : </b><br>'+ details.pick_up_details.name +'<br>'+ details.pick_up_details.address+', '+details.pick_up_details.pincode+'<br>'+ details.pick_up_details.landmark+'<br>'+ details.pick_up_details.phone+'</td>'+
                             '<td style="width:30rem;padding:1.5rem;border-style: dotted;"><b>To : </b><br>'+ details.delivery_details[i].name +'<br>'+ details.delivery_details[i].add+', '+details.delivery_details[i].pin+'<br>'+ details.delivery_details[i].landmark+'<br>'+ details.delivery_details[i].phone+'</td>'+
                         '</tr>');
                     cnt++;
