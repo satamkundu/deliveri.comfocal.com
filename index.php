@@ -799,10 +799,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 '<th scope="col" colspan="3">Pick Up Details</th>'+                            
                             '</tr>'+
                         '</thead>'+
-                        '<tbody>'+
-                            '<tr>'+                                
-                                '<td scope="col" colspan="3">'+ details.pick_up_details.name +', '+ details.pick_up_details.address+', '+details.pick_up_details.pincode+', '+ details.pick_up_details.landmark+'</td>'+
-                            '</tr>'+
+                        '<tbody>'+                            
                             '<tr>'+
                                 '<th scope="col" colspan="3">Delivery Details</th>'+                           
                            '</tr>');
@@ -811,8 +808,8 @@ if (session_status() == PHP_SESSION_NONE) {
                             for(var i = 0; i < details.delivery_details.length; i++){
                                 hand_written.push('<tr>'+
                                         '<th>'+cnt+'</th>'+
-                                        '<td>From<br>'+ details.pick_up_details.name +'<br>'+ details.pick_up_details.address+', '+details.pick_up_details.pincode+'<br>'+ details.pick_up_details.landmark+'</td>'+
-                                        '<td>To<br>'+ details.delivery_details[i].name +'<br>'+ details.delivery_details[i].add+', '+details.delivery_details[i].pin+'<br>'+ details.delivery_details[i].landmark+'</td>'+
+                                        '<td>From<br>'+ details.pick_up_details.name +'<br>'+ details.pick_up_details.address+', '+details.pick_up_details.pincode+'<br>'+ details.pick_up_details.landmark+'<br>'+ details.pick_up_details.phone+'</td>'+
+                                        '<td>To<br>'+ details.delivery_details[i].name +'<br>'+ details.delivery_details[i].add+', '+details.delivery_details[i].pin+'<br>'+ details.delivery_details[i].landmark+'<br>'+ details.delivery_details[i].phone+'</td>'+
                                     '</tr>');
                                 cnt++;
                             }
