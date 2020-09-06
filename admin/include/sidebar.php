@@ -43,6 +43,11 @@
 		<ul class="widget widget-menu unstyled">						
 			<li><a href="main.php"><i class="menu-icon icon-file"></i>Report</a></li>
 		</ul>
+		<?php if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2){?>
+		<ul class="widget widget-menu unstyled">						
+			<li><a href="promo-code.php"><i class="menu-icon icon-file"></i>Promo Code</a></li>
+		</ul>
+		<?php } ?>
 		<ul class="widget widget-menu unstyled">						
 			<li><a href="logout.php"><i class="menu-icon icon-signout"></i>Logout</a></li>
 		</ul>

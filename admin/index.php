@@ -1,6 +1,9 @@
 <?php
 require_once('include/top.php');
 error_reporting(0);
+if(strlen($_SESSION['alogin']) > 0){	
+	header('location:main.php');
+}
 if(isset($_POST['submit'])){
 	$username=$_POST['username'];
 	$password=md5($_POST['password']);

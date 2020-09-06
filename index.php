@@ -137,10 +137,11 @@ if (session_status() == PHP_SESSION_NONE) {
                 if(isset($_SESSION["id"])){
                     $res2 = mysqli_query($con, "SELECT * FROM user_address WHERE user_id = '$user_id'");                    
                     $row2 = mysqli_fetch_assoc($res2);
-                    extract($row2);
+                    extract($row2);                    
                     mysqli_close($con);
                 }
                 ?>
+                <input type="hidden" id="pick_default_pin" value="<?=(isset($_SESSION["id"]))?$pincode:'' ?>">
 
                 <div class="fieldset">
                     <div class="pick_up_details" style="display:none">
@@ -154,6 +155,11 @@ if (session_status() == PHP_SESSION_NONE) {
                                     <textarea name="add" id="p_add" class="form-control mb-2" placeholder="Address..."><?=(isset($_SESSION["id"]))?$address:'' ?></textarea>
                                     <input type="text" id="p_landmark" class="form-control mb-2" placeholder="Landmark"  value="<?=(isset($_SESSION["id"]))?$landmark:'' ?>">
                                     <input type="number" id= "p_pin" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Pincode"  value="<?=(isset($_SESSION["id"]))?$pincode:'' ?>">
+                                    <div class="form-group row">
+                                        <div class="col-sm-9" style="padding-right:0"><input type="text" id="promo_code" class="form-control mb-2" placeholder="Enter a Valid Promo Code"></div>
+                                        <div class="col-sm-3" style="padding-left:0"><input type="button" id="validate_promocode" class="btn btn-primary mb-2" value="Validate Promocode"></div>
+                                        <p id="promo_msg" style="margin-left: 2rem;font-size: 11px;"></p>
+                                    </div>                                    
                                 </form>
                                 <button id="back-1" type="button" class="back-btn btn btn-danger">Back</button>
                                 <button id="next-1" style="float:right" type="button" class="next-btn btn btn-success">Next</button>
@@ -335,7 +341,9 @@ if (session_status() == PHP_SESSION_NONE) {
         order_id:Math.floor(Math.random()*900000000) + 100000000,
         amount:"",
         user_id:<?=$user_id?>,
-        user_admin_type:<?=$user_admin_type?>
+        user_admin_type:<?=$user_admin_type?>,
+        promo_id:'0',
+        promo_rate:"0"
     }
 
     console.log(details.user_id+" "+details.user_admin_type);
@@ -536,9 +544,16 @@ if (session_status() == PHP_SESSION_NONE) {
                                     }
                                     amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(i)).val()});
                                 }
-                                amount += 50;
+                                if( $("#pick_default_pin").val() != $("#p_pin").val() ){      
+                                    amount += 50; //convence charge for regular delivery
+                                }
                             }
-                            details.amount = amount;
+                            if(details.promo_rate > 0){
+                                console.log(details.promo_rate);
+                                details.amount = amount - amount * (details.promo_rate / 100);
+                            }else{
+                                details.amount = amount;
+                            }
                         }
                         else if(details.delivery_option=="same"){
                             var amount = 0;
@@ -565,7 +580,12 @@ if (session_status() == PHP_SESSION_NONE) {
                                 }
                                 amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(i)).val()});
                             }
-                            details.amount = amount;
+                            if(details.promo_rate > 0){
+                                details.amount = amount - amount * (details.promo_rate / 100);
+                            }else{
+                                details.amount = amount;
+                            }
+                            // details.amount = amount;
                             // console.log(amount);
                         }
                         
@@ -721,9 +741,11 @@ if (session_status() == PHP_SESSION_NONE) {
                                             '</tr>'
                                         );
                                             cnt++;
-                                        }  
-                                        if(details.delivery_option=="regular" && count > 1){
-                                            newHTML_Mobile.push('<tr><th colspan="4">Convenience Fee</th><th>50</th></tr>');
+                                        }
+                                        if( $("#pick_default_pin").val() != $("#p_pin").val() ){                                      
+                                            if(details.delivery_option=="regular" && count > 1){
+                                                newHTML_Mobile.push('<tr><th colspan="4">Convenience Fee</th><th>50</th></tr>');
+                                            }
                                         }
                                         newHTML_Mobile.push('<tr><th colspan="4">Total</th><th colspan="2">'+details.amount+'</th></tr></table>');
                                         $("#res-mobile").html(newHTML_Mobile.join(""));
@@ -1001,6 +1023,31 @@ if (session_status() == PHP_SESSION_NONE) {
             document.getElementById('cod-amt'+id).setAttribute("disabled", "true");
         }   
     }
+
+    $("#validate_promocode").click(function(){
+        let promocode = $("#promo_code").val()
+        if(promocode != ""){
+            $.ajax({
+                type:'POST',
+                url:'process/data.php',
+                data:{promocode:promocode},
+                success : function(res){
+                    res = $.parseJSON(res)
+                    if(res.error == 'false' ){
+                        details.promo_id = res.promo_id;
+                        details.promo_rate = res.promo_value;
+                        $("#promo_msg").text(res.message);
+                        $("#promo_msg").css({ 'color': 'green'});
+                    }else{
+                        $("#promo_msg").text(res.message);
+                        $("#promo_msg").css({ 'color': 'red'});
+                    }
+                }
+            });
+        }
+    });
+
+    
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js" integrity="sha256-c9vxcXyAG4paArQG3xk6DjyW/9aHxai2ef9RpMWO44A=" crossorigin="anonymous"></script>

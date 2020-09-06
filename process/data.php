@@ -25,9 +25,11 @@ if(isset($_POST['myData'])){
     $pick_address = test_input($obj->pick_up_details->address);
     $pick_landmark = test_input($obj->pick_up_details->landmark);
 
+    $promocode_id = test_input($obj->promo_id);
+
     $delivery_details = $obj->delivery_details;
 
-    $sql = "INSERT INTO `order_main` (`order_id`, `total_price`,`user_id`,`order_from`) VALUES ('$order_id', '$total_amount','$user_id', '$user_admin_type')";
+    $sql = "INSERT INTO `order_main` (`order_id`, `total_price`,`user_id`,`order_from`,`promo_code_id`) VALUES ('$order_id', '$total_amount','$user_id', '$user_admin_type','$promocode_id')";
     if(mysqli_query($con, $sql)){
         $sql = "INSERT INTO `pick_up_details` (`order_id`, `name`, `address`, `pin`, `phone`, `landmark`) VALUES ('$order_id', '$pick_name', '$pick_address', '$pick_pincode', '$pick_phone', '$pick_landmark')";
         if(mysqli_query($con, $sql)){
@@ -77,6 +79,31 @@ if(isset($_POST['track_id'])){
     }else{
         echo "Please Give a Valid Tracking ID";
     }
+}
+
+if(isset($_POST['promocode'])){
+    date_default_timezone_set('Asia/Kolkata');
+    $today = date('Y-m-d');
+    $promocode = $_POST['promocode'];
+    $data = [];
+    $res = mysqli_query($con, "SELECT * FROM user_promo WHERE promo_code = '$promocode' AND '$today' BETWEEN valid_from AND valid_till");
+    if(mysqli_num_rows($res) > 0){
+        $row = mysqli_fetch_assoc($res);
+        $promo_disount = $row['discount_per'];
+        $promo_id = $row['id'];
+        $data = [
+            'message' => 'Promocode applied Successfully, You will get '.$promo_disount.'% discount on total amount',
+            'error' => 'false',
+            'promo_id' => $promo_id,
+            'promo_value' => $promo_disount,
+        ];
+    }else{
+        $data = [
+            'message' => 'Invalid Promo Code',
+            'error' => 'true'
+        ];
+    }
+    echo json_encode($data);
 }
 mysqli_close($con);
 ?>
