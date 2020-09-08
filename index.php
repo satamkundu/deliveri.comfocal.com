@@ -3,6 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 } ?>
 <?php include_once 'includes/top.php'; ?>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <style>
     * {
         margin: 0;
@@ -44,6 +45,23 @@ if (session_status() == PHP_SESSION_NONE) {
         text-align: left;
         margin-bottom:1rem;
     }
+
+    .ui-autocomplete-loading {
+        background: white url("assets/images/ui-anim_basic_16x16.gif") right center no-repeat;
+    }
+    .ui-autocomplete {
+        max-height: 300px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+    }
+    /* IE 6 doesn't support max-height
+    * we use height instead, but this forces the menu to always be this tall
+    */
+    * html .ui-autocomplete {
+        height: 100px;
+    }
+
     @media only screen and (max-width: 600px) {
         .legend {
             font-size: inherit;
@@ -170,7 +188,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
                 <div class="fieldset">
                     <div class="delivery_details" style="display:none">
-                        <form class="text-center border border-light" action="#!" style="padding-bottom:15vh;">
+                        <form autocomplete="off" class="text-center border border-light" action="#!" style="padding-bottom:15vh;">
                             <p class="h4 mb-4 pick-head text-info">Delivery Details</p>
                             <table class="table" style="width: 100%;" id="productTable">
                             <tbody>
@@ -196,7 +214,9 @@ if (session_status() == PHP_SESSION_NONE) {
                                                 <input type="text" id= "landmark<?php echo $x; ?>" class="form-control mb-4" placeholder="landmark" >
                                             </div>
                                             <div class="col-md-3 deli-frm">
-                                                <input type="number" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" id= "pin<?php echo $x; ?>" class="form-control mb-4" placeholder="Pincode" >
+                                                <div class="ui-widget">
+                                                    <input type="number" autocomplete="new-pin" onkeyup="check_pin_avail(this.id)" id= "pin<?php echo $x; ?>" class="form-control mb-4" placeholder="Pincode">
+                                                </div>
                                             </div>
                                             <div class="col-md-3 deli-frm">
                                                 <input type="number" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" id= "aprx_amt<?php echo $x; ?>" class="form-control mb-4" placeholder="Declare Product Value" >
@@ -346,7 +366,7 @@ if (session_status() == PHP_SESSION_NONE) {
         promo_rate:"0"
     }
 
-    console.log(details.user_id+" "+details.user_admin_type);
+    // console.log(details.user_id+" "+details.user_admin_type);
 
     let option;
     let p_name, p_pincode, p_phone, p_address, p_landmark;
@@ -549,7 +569,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 }
                             }
                             if(details.promo_rate > 0){
-                                console.log(details.promo_rate);
+                                // console.log(details.promo_rate);
                                 details.amount = amount - amount * (details.promo_rate / 100);
                             }else{
                                 details.amount = amount;
@@ -843,7 +863,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
     function addRow() {
-        $("#addRowBtn").button("loading");
+        // $("#addRowBtn").button("loading");
 
         var tableLength = $("#productTable tbody tr").length;
 
@@ -864,7 +884,7 @@ if (session_status() == PHP_SESSION_NONE) {
         }
 
         
-        $("#addRowBtn").button("reset");
+        // $("#addRowBtn").button("reset");
 
 
         var tr = '<tr id="row'+count+'" class="'+arrayNumber+'">'+
@@ -885,7 +905,9 @@ if (session_status() == PHP_SESSION_NONE) {
                             '<input type="text" id= "landmark'+count+'" class="form-control mb-4" placeholder="landmark" >'+
                         '</div>'+
                         '<div class="col-md-3 deli-frm">'+
-                            '<input type="number" id= "pin'+count+'" class="form-control mb-4" placeholder="Pincode" >'+
+                            '<div class="ui-widget">'+
+                                '<input type="number" autocomplete="new-pin" onkeyup="check_pin_avail(this.id)" id= "pin'+count+'" id= "pin'+count+'" class="form-control mb-4" placeholder="Pincode" onkeyup="check_pin_avail(this.id)">'+
+                            '</div>'+
                         '</div>'+
                         '<div class="col-md-3 deli-frm">'+
                             '<input type="number" id="aprx_amt'+count+'" class="form-control mb-4" placeholder="Declare Product Value" >'+
@@ -1046,8 +1068,31 @@ if (session_status() == PHP_SESSION_NONE) {
             });
         }
     });
-
     
+</script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    function check_pin_avail(id){        
+        $("#"+id).autocomplete({
+            source: function( request, response ) {
+                $.ajax({
+                    url: "process/request.php",
+                    dataType: "json",
+                    data: {
+                        q: request.term
+                    },
+                    success: function( data ) {
+                        response( data );
+                    }
+                });
+            },
+            minLength: 3,
+            select: function( event, ui ) {},
+            open: function() {},
+            close: function() {}
+        });
+    }
+
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js" integrity="sha256-c9vxcXyAG4paArQG3xk6DjyW/9aHxai2ef9RpMWO44A=" crossorigin="anonymous"></script>
@@ -1059,8 +1104,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
             pdf.addImage(blob, 'PNG', 0, 0, $('#content2').width(), $('#content2').height());
             pdf.save("order"+details.order_id+".pdf");
-
-            // that.options.api.optionsChanged();
         });
     });
 </script>

@@ -105,5 +105,23 @@ if(isset($_POST['promocode'])){
     }
     echo json_encode($data);
 }
+
+if(isset($_POST['pin_find'])){
+    if($type == 1){
+        $searchText = $_POST['pin_find'];
+        $sql = "SELECT pincode FROM pincodes where pincode like '%".$searchText."%' AND status = 'open' limit 10";
+        $result = mysqli_query($con,$sql);
+        if(mysqli_num_rows($result) > 0){
+            $search_arr = array();
+            while($fetch = mysqli_fetch_assoc($result)){                
+                $pincode = $fetch['pincode'];
+                $search_arr[] = array("pin" => $pincode);
+            }
+        }else{
+            $search_arr[] = array("pin" => "No Pincode Found");
+        }
+        echo json_encode($search_arr);
+    }
+}
 mysqli_close($con);
 ?>
