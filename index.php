@@ -174,7 +174,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                     <input type="text" id="p_landmark" class="form-control mb-2" placeholder="Landmark"  value="<?=(isset($_SESSION["id"]))?$landmark:'' ?>">
                                     <input type="number" id= "p_pin" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Pincode"  value="<?=(isset($_SESSION["id"]))?$pincode:'' ?>">
                                     <div class="form-group row">
-                                        <div class="col-sm-9" style="padding-right:0"><input type="text" id="promo_code" class="form-control mb-2" placeholder="Enter a Valid Promo Code"></div>
+                                        <div class="col-sm-9" style="padding-right:0"><input type="text" id="promo_code" class="form-control mb-2" placeholder="Have You Any Valid Promo Code ? "></div>
                                         <div class="col-sm-3" style="padding-left:0"><input type="button" id="validate_promocode" class="btn btn-primary mb-2" value="Validate Promocode"></div>
                                         <p id="promo_msg" style="margin-left: 2rem;font-size: 11px;"></p>
                                     </div>                                    
@@ -415,7 +415,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 error = 1;
                 return false;
             }else{
-                if( !p_name.match('^[a-zA-Z ]{3,50}$') ){
+                if( !p_name.match('^[a-zA-Z ]{3,150}$') ){
                     // alert('Please Give a Proper Name');
                     Swal.fire({
                         icon: 'error',
@@ -539,6 +539,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 }
                                 if($("#cod-amt"+(count)).val() != 0){
                                     let interest = ($("#cod-amt"+(count)).val() * 0.015);
+                                    interest = interest.toFixed(2);
                                     amount +=  interest;                            
                                 }
                                 amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(count)).val()});
@@ -560,12 +561,13 @@ if (session_status() == PHP_SESSION_NONE) {
                                     }                                
                                     if($("#cod-amt"+(i)).val() != 0){
                                         let interest = ($("#cod-amt"+(i)).val() * 0.015);
+                                        interest = interest.toFixed(2);
                                         amount +=  interest;                                    
                                     }
                                     amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(i)).val()});
                                 }
                                 if( $("#pick_default_pin").val() != $("#p_pin").val() ){      
-                                    amount += 50; //convence charge for regular delivery
+                                    amount += 25; //convence charge for regular delivery
                                 }
                             }
                             if(details.promo_rate > 0){
@@ -702,7 +704,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                                                         cnt++;
                                                                     }  
                                                                     if(details.delivery_option=="regular" && count > 1){
-                                                                        newHTML.push('<tr><th colspan="4">Convenience Fee</th><th>50</th></tr>');
+                                                                        newHTML.push('<tr><th colspan="4">Convenience Fee</th><th>25</th></tr>');
                                                                     }
                                                                     newHTML.push('<tr><th colspan="4">Total</th><th colspan="2">'+details.amount+'</th></tr></table></span>'+
                                                                 '</div>'+
@@ -967,7 +969,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 
 
             if( d_name != "" && d_pin != "" && d_phone != "" && d_add != "" && d_weight != "" && d_landmark != "" && d_aprx_amt != ""){
-                if( !d_name.match('^[a-zA-Z ]{3,16}$') ){
+                if( !d_name.match('^[a-zA-Z ]{3,150}$') ){
                     // alert('Please Give a Proper Name');
                     Swal.fire({
                         icon: 'error',

@@ -68,7 +68,7 @@ if(isset($_POST['track_id'])){
                 ?>
                 <tr>
                     <th><?=$result['name']?></th>
-                    <th><?=$result['order_status']?></th>
+                    <th><?=ucwords($result['order_status'])?></th>
                 </tr>
                 <?php
             }
