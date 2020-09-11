@@ -46,6 +46,7 @@
 		<?php if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2){?>
 		<ul class="widget widget-menu unstyled">						
 			<li><a href="promo-code.php"><i class="menu-icon icon-file"></i>Promo Code</a></li>
+			<li><a href="pin-restriction.php"><i class="menu-icon icon-file"></i>Pin Restriction</a></li>
 		</ul>
 		<?php } ?>
 		<ul class="widget widget-menu unstyled">						

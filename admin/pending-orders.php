@@ -5,6 +5,23 @@ if(strlen($_SESSION['alogin'])==0){
 }else{
 	date_default_timezone_set('Asia/Kolkata');// change according timezone
 	$currentTime = date( 'd-m-Y h:i:s A', time () );
+
+	if(isset($_GET['del'])){
+		if(isset($_GET['user']) && $_GET['user'] == "bed59c54e6ed09cbe588173dba3935a2"){
+			if(mysqli_query($con,"delete from order_main where order_id = '".$_GET['order_id']."'"))
+				if(mysqli_query($con,"delete from delivery_details where order_id = '".$_GET['order_id']."'"))
+					if(mysqli_query($con,"delete from pick_up_details where order_id = '".$_GET['order_id']."'")){
+						$_SESSION['delmsg']="Order deleted !!";
+						header('location: pending-orders.php');
+						exit;
+					}
+		}else{
+			$_SESSION['delmsg']="Invalid Request";
+			header('location: pending-orders.php');
+			exit;
+		}
+	}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,12 +63,16 @@ if(strlen($_SESSION['alogin'])==0){
 								<h3>Pending Orders</h3>
 							</div>
 							<div class="module-body table">
-							<?php if(isset($_GET['del'])){?>
+							<?php //if(isset($_GET['del'])){?>
 							<div class="alert alert-error">
 								<button type="button" class="close" data-dismiss="alert">×</button>
-								<strong>Oh snap!</strong><?php echo htmlentities($_SESSION['delmsg']);?><?php echo htmlentities($_SESSION['delmsg']="");?>
+								<?= (isset($_SESSION['delmsg']))?$_SESSION['delmsg']:'' ?>
+								<?php
+								 if(isset($_SESSION['delmsg']))
+									unset($_SESSION['delmsg']);
+								?>
 							</div>
-							<?php } ?>
+							<?php //} ?>
 							<br />
 							<table cellpadding="0" cellspacing="0" border="0" class="datatable-1 table table-bordered table-striped	 display table-responsive" >
 								<thead>
@@ -106,6 +127,11 @@ if(strlen($_SESSION['alogin'])==0){
 
 											<td>
 												<a href="updateorder.php?oid=<?php echo htmlentities($row['order_id']);?>" title="Update order" target="_blank"><i class="icon-edit"></i></a>
+												<?php 
+													if($_SESSION['admin_type'] == 1 || $_SESSION['admin_type'] == 2){
+												?>
+												<a href="pending-orders.php?order_id=<?php echo $row['order_id']?>&del=delete&user=<?=md5('com%$12\ad@mi^')?>" onClick="return confirm('Are you sure you want to delete?')"><i class="icon-remove-sign"></i></a></td>
+													<?php } ?>
 											</td>
 										</tr>
 										<?php $cnt=$cnt+1; } ?>

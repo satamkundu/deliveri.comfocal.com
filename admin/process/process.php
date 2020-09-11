@@ -31,5 +31,14 @@
             if(!$query) echo "0".mysqli_error($con);
             else echo "1";
         }
+
+        if(isset($_POST['pin'])){
+            $pin = $_POST['pin'];
+            if($_POST['for'] == 'close'){                
+                mysqli_query($con, "UPDATE pincodes SET status = 'close' WHERE pincode = '$pin'");
+            }else{
+                mysqli_query($con, "UPDATE pincodes SET status = 'open' WHERE pincode = '$pin'");
+            }
+        }
     }
 ?>
