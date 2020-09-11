@@ -540,7 +540,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 if($("#cod-amt"+(count)).val() != 0){
                                     let interest = ($("#cod-amt"+(count)).val() * 0.015);
                                     interest = interest.toFixed(2);
-                                    amount +=  interest;                            
+                                    amount +=  parseFloat(interest);                       
                                 }
                                 amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(count)).val()});
                             }else{
@@ -562,7 +562,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                     if($("#cod-amt"+(i)).val() != 0){
                                         let interest = ($("#cod-amt"+(i)).val() * 0.015);
                                         interest = interest.toFixed(2);
-                                        amount +=  interest;                                    
+                                        amount +=  parseFloat(interest);                                 
                                     }
                                     amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(i)).val()});
                                 }
@@ -598,7 +598,8 @@ if (session_status() == PHP_SESSION_NONE) {
                                 }
                                 if($("#cod-amt"+(i)).val() != 0){
                                     let interest = ($("#cod-amt"+(i)).val() * 0.015);
-                                    amount +=  interest;                                
+                                    interest = interest.toFixed(2);
+                                    amount +=  parseFloat(interest);                             
                                 }
                                 amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(i)).val()});
                             }
