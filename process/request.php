@@ -7,7 +7,8 @@ if(isset($q) || !empty($q)) {
     $query = "SELECT * FROM pincodes WHERE pincode LIKE '$q%' AND status = 'open'";
     $result = mysqli_query($con, $query);
     $res = array();
-    while($resultSet = mysqli_fetch_assoc($result)) {     
+    while($resultSet = mysqli_fetch_assoc($result)) {   
+        $res[$resultSet['id']]['id'] =  $resultSet['rates_per_kg'];  
         $res[$resultSet['id']]['value'] = $resultSet['pincode'];
         $res[$resultSet['id']]['label'] = $resultSet['pincode'].", ".$resultSet['taluk'].", ".$resultSet['divisionname'].", ".$resultSet['statename'];
     }

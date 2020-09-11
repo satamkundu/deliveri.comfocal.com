@@ -216,6 +216,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                             <div class="col-md-3 deli-frm">
                                                 <div class="ui-widget">
                                                     <input type="number" autocomplete="new-pin" onkeyup="check_pin_avail(this.id)" id= "pin<?php echo $x; ?>" class="form-control mb-4" placeholder="Pincode">
+                                                    <input type="hidden" id="pin_rate<?= $x ?>" value="0">
                                                 </div>
                                             </div>
                                             <div class="col-md-3 deli-frm">
@@ -468,11 +469,11 @@ if (session_status() == PHP_SESSION_NONE) {
             $("#next-2").attr("id", "next-1");
         });
 
-        $("#next-2").click(function(){       
+        $("#next-2").click(function(){
 
-        details.delivery_details = []; 
+            details.delivery_details = []; 
 
-        var tableLength = $("#productTable tbody tr").length;
+            var tableLength = $("#productTable tbody tr").length;
 
             var tableRow;
             var arrayNumber;
@@ -496,7 +497,6 @@ if (session_status() == PHP_SESSION_NONE) {
                         return false;
                     }
                     if( !$("#pin"+(count)).val().match('^[0-9]{6,6}$') ){
-                        // alert('Please Enter a Valid Pincode');
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
@@ -505,6 +505,17 @@ if (session_status() == PHP_SESSION_NONE) {
                         error = 1;
                         return false;
                     }
+
+                    if( $("#pin_rate"+(count)).val() == "0"){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Please Choose Pincode From Dropdown List',
+                        });
+                        error = 1;
+                        return false;
+                    }
+
                     if( !$("#phone"+(count)).val().match('^[0-9]{10,10}$') ){
                         // alert('Please Enter a Valid Phone Number');
                         Swal.fire({
@@ -516,6 +527,8 @@ if (session_status() == PHP_SESSION_NONE) {
                         return false;
                     }
 
+                    
+
                     var amount_details = [];
 
                     if(error == 0){
@@ -523,7 +536,7 @@ if (session_status() == PHP_SESSION_NONE) {
                         if(details.delivery_option=="regular"){
                             var amount = 0;                        
                             if(count == 1){
-                                const base_amount_for_more_than_one_kg = 50;
+                                const base_amount_for_more_than_one_kg = $("#pin_rate"+(count)).val();
                                 const base_amount_for_one_kg = 75;
                                 if($("#weight-gm"+(count)).val() != 0){
                                     amount += base_amount_for_one_kg + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(count)).val());
@@ -544,7 +557,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 }
                                 amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(count)).val()});
                             }else{
-                                const base_amount_for_more_than_one_kg = 50;
+                                const base_amount_for_more_than_one_kg = $("#pin_rate"+(count)).val();
                                 const base_amount_for_one_kg = 50;
                                 for(var i = 1; i <= count; i++){
                                     if($("#weight-gm"+(i)).val() != 0){
@@ -581,7 +594,7 @@ if (session_status() == PHP_SESSION_NONE) {
                             var amount = 0;
                             var amount_temp = 0;
 
-                            const base_amount_for_more_than_one_kg = 50;
+                            const base_amount_for_more_than_one_kg = $("#pin_rate"+(count)).val();
                             const base_amount_for_one_kg = 80;            
                             for(var i = 1; i <= count; i++){
                                 if($("#weight-gm"+(i)).val() != 0){
@@ -836,6 +849,7 @@ if (session_status() == PHP_SESSION_NONE) {
             newWin.document.close();
             setTimeout(function(){newWin.close();},10);
         });
+
         $("#hand-written-name-tag").click(function(){
             var hand_written = [];
             hand_written.push('<table class="table table-sm">'+
@@ -909,7 +923,8 @@ if (session_status() == PHP_SESSION_NONE) {
                         '</div>'+
                         '<div class="col-md-3 deli-frm">'+
                             '<div class="ui-widget">'+
-                                '<input type="number" autocomplete="new-pin" onkeyup="check_pin_avail(this.id)" id= "pin'+count+'" id= "pin'+count+'" class="form-control mb-4" placeholder="Pincode" onkeyup="check_pin_avail(this.id)">'+
+                                '<input type="number" autocomplete="new-pin" onkeyup="check_pin_avail(this.id)" id="pin'+count+'" class="form-control mb-4" placeholder="Pincode">'+
+                                '<input type="hidden" id="pin_rate'+count+'" value="0">'+
                             '</div>'+
                         '</div>'+
                         '<div class="col-md-3 deli-frm">'+
@@ -1090,7 +1105,11 @@ if (session_status() == PHP_SESSION_NONE) {
                 });
             },
             minLength: 3,
-            select: function( event, ui ) {},
+            select: function( event, ui ) {
+                var vl = ui.item.id; 
+                var num = $("#"+id).attr('id');
+                $("#pin_rate"+num.substring(3)).val(vl);
+            },
             open: function() {},
             close: function() {}
         });
