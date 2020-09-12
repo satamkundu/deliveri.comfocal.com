@@ -552,8 +552,8 @@ if (session_status() == PHP_SESSION_NONE) {
                                 }
                                 if($("#cod-amt"+(count)).val() != 0){
                                     let interest = ($("#cod-amt"+(count)).val() * 0.015);
-                                    interest = interest.toFixed(2);
-                                    amount +=  parseFloat(interest);                       
+                                    amount +=  parseFloat(interest.toFixed(2));
+                                    amount = parseFloat(amount.toFixed(2));                      
                                 }
                                 amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(count)).val()});
                             }else{
@@ -569,13 +569,13 @@ if (session_status() == PHP_SESSION_NONE) {
                                             amount_temp = base_amount_for_one_kg;
                                         }else{
                                             amount += base_amount_for_one_kg + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(i)).val()) - 1 );
-                                            amount_temp = base_amount_for_one_kg + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(i)).val()) - 1 );
+                                            amount_temp = base_amount_for_one_kg + base_amount_for_more_than_one_kg * ( Math.floor($("#weigppht"+(i)).val()) - 1 );
                                         }
                                     }                                
                                     if($("#cod-amt"+(i)).val() != 0){
                                         let interest = ($("#cod-amt"+(i)).val() * 0.015);
-                                        interest = interest.toFixed(2);
-                                        amount +=  parseFloat(interest);                                 
+                                        amount +=  parseFloat(interest.toFixed(2));
+                                        amount = parseFloat(amount.toFixed(2));                         
                                     }
                                     amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(i)).val()});
                                 }
@@ -585,7 +585,8 @@ if (session_status() == PHP_SESSION_NONE) {
                             }
                             if(details.promo_rate > 0){
                                 // console.log(details.promo_rate);
-                                details.amount = amount - amount * (details.promo_rate / 100);
+                                amount = amount - amount * (details.promo_rate / 100);
+                                details.amount = parseFloat(amount.toFixed(2));
                             }else{
                                 details.amount = amount;
                             }
@@ -611,13 +612,14 @@ if (session_status() == PHP_SESSION_NONE) {
                                 }
                                 if($("#cod-amt"+(i)).val() != 0){
                                     let interest = ($("#cod-amt"+(i)).val() * 0.015);
-                                    interest = interest.toFixed(2);
-                                    amount +=  parseFloat(interest);                             
+                                    amount +=  parseFloat(interest.toFixed(2));
+                                    amount = parseFloat(amount.toFixed(2));                             
                                 }
                                 amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(i)).val()});
                             }
                             if(details.promo_rate > 0){
-                                details.amount = amount - amount * (details.promo_rate / 100);
+                                amount = amount - amount * (details.promo_rate / 100);
+                                details.amount = parseFloat(amount.toFixed(2));
                             }else{
                                 details.amount = amount;
                             }
@@ -712,7 +714,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                                                             '<td>'+cnt+'</td>'+
                                                                             '<td>'+ details.delivery_details[i].amount_self +'</td>'+
                                                                             '<td>'+ details.delivery_details[i].cod_self +'</td>'+
-                                                                            '<td>'+ (parseInt(details.delivery_details[i].cod_self) * 0.015) +'</td>'+
+                                                                            '<td>'+ ((details.delivery_details[i].cod_self) * 0.015).toFixed(2) +'</td>'+
                                                                         '</tr>'
                                                                     );
                                                                         cnt++;
