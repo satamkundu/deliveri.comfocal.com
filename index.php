@@ -118,9 +118,9 @@ if (session_status() == PHP_SESSION_NONE) {
             <?php
                 $user_id = 0;
                 $user_admin_type = 0;
-                if(isset($_SESSION["id"]) && isset($_SESSION["username"]) ){
+                if(isset($_SESSION["id_user"]) && isset($_SESSION["username"]) ){
                     include_once 'includes/config.php';
-                    $user_id = $_SESSION["id"];
+                    $user_id = $_SESSION["id_user"];
                     $res1 = mysqli_query($con, "SELECT admin_id FROM users WHERE id = '$user_id'");
                     $row1 = mysqli_fetch_assoc($res1);
                     $user_admin_type = $row1['admin_id'];                    
@@ -152,14 +152,14 @@ if (session_status() == PHP_SESSION_NONE) {
                 </div>
 
                 <?php
-                if(isset($_SESSION["id"])){
+                if(isset($_SESSION["id_user"])){
                     $res2 = mysqli_query($con, "SELECT * FROM user_address WHERE user_id = '$user_id'");                    
                     $row2 = mysqli_fetch_assoc($res2);
                     extract($row2);                    
                     mysqli_close($con);
                 }
                 ?>
-                <input type="hidden" id="pick_default_pin" value="<?=(isset($_SESSION["id"]))?$pincode:'' ?>">
+                <input type="hidden" id="pick_default_pin" value="<?=(isset($_SESSION["id_user"]))?$pincode:'' ?>">
 
                 <div class="fieldset">
                     <div class="pick_up_details" style="display:none">
@@ -168,11 +168,11 @@ if (session_status() == PHP_SESSION_NONE) {
                             <div class="col-md-6 pick-box">
                                 <form class="text-center border border-light" action="#!">
                                     <p class="h4 mb-4 pick-head">Pick Up Details</p>                            
-                                    <input type="text" id="p_name" class="form-control mb-2" placeholder="Name" value="<?=(isset($_SESSION["id"]))?$name:'' ?>">
-                                    <input type="number" id="p_phone" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Phone" value="<?=(isset($_SESSION["id"]))?$phone:'' ?>" >
-                                    <textarea name="add" id="p_add" class="form-control mb-2" placeholder="Address..."><?=(isset($_SESSION["id"]))?$address:'' ?></textarea>
-                                    <input type="text" id="p_landmark" class="form-control mb-2" placeholder="Landmark"  value="<?=(isset($_SESSION["id"]))?$landmark:'' ?>">
-                                    <input type="number" id= "p_pin" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Pincode"  value="<?=(isset($_SESSION["id"]))?$pincode:'' ?>">
+                                    <input type="text" id="p_name" class="form-control mb-2" placeholder="Name" value="<?=(isset($_SESSION["id_user"]))?$name:'' ?>">
+                                    <input type="number" id="p_phone" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Phone" value="<?=(isset($_SESSION["id_user"]))?$phone:'' ?>" >
+                                    <textarea name="add" id="p_add" class="form-control mb-2" placeholder="Address..."><?=(isset($_SESSION["id_user"]))?$address:'' ?></textarea>
+                                    <input type="text" id="p_landmark" class="form-control mb-2" placeholder="Landmark"  value="<?=(isset($_SESSION["id_user"]))?$landmark:'' ?>">
+                                    <input type="number" id= "p_pin" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" class="form-control mb-2" placeholder="Pincode"  value="<?=(isset($_SESSION["id_user"]))?$pincode:'' ?>">
                                     <div class="form-group row">
                                         <div class="col-sm-9" style="padding-right:0"><input type="text" id="promo_code" class="form-control mb-2" placeholder="Have You Any Valid Promo Code ? "></div>
                                         <div class="col-sm-3" style="padding-left:0"><input type="button" id="validate_promocode" class="btn btn-primary mb-2" value="Validate Promocode"></div>
@@ -537,17 +537,18 @@ if (session_status() == PHP_SESSION_NONE) {
                             var amount = 0;                        
                             if(count == 1){
                                 const base_amount_for_more_than_one_kg = $("#pin_rate"+(count)).val();
-                                const base_amount_for_one_kg = 75;
+                                // const base_amount_for_one_kg = 50;
+                                const base_amount_for_one_kg = $("#pin_rate"+(count)).val();
                                 if($("#weight-gm"+(count)).val() != 0){
-                                    amount += base_amount_for_one_kg + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(count)).val());
-                                    amount_temp = base_amount_for_one_kg + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(count)).val());
+                                    amount +=  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(count)).val());
+                                    amount_temp =  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(count)).val());
                                 }else if($("#weight-gm"+(count)).val() == 0){
                                     if($("#weight"+(count)).val() == 1){
-                                        amount += base_amount_for_one_kg;
-                                        amount_temp = base_amount_for_one_kg;
+                                        amount +=  Math.floor(base_amount_for_one_kg);
+                                        amount_temp =  Math.floor(base_amount_for_one_kg);
                                     }else{
-                                        amount += base_amount_for_one_kg + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(count)).val()) - 1 );
-                                        amount_temp = base_amount_for_one_kg + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(count)).val()) - 1 );
+                                        amount +=  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(count)).val()) - 1 );
+                                        amount_temp =  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(count)).val()) - 1 );
                                     }
                                 }
                                 if($("#cod-amt"+(count)).val() != 0){
@@ -558,18 +559,19 @@ if (session_status() == PHP_SESSION_NONE) {
                                 amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(count)).val()});
                             }else{
                                 const base_amount_for_more_than_one_kg = $("#pin_rate"+(count)).val();
-                                const base_amount_for_one_kg = 50;
+                                // const base_amount_for_one_kg = 50;
+                                const base_amount_for_one_kg = $("#pin_rate"+(count)).val();
                                 for(var i = 1; i <= count; i++){
                                     if($("#weight-gm"+(i)).val() != 0){
-                                        amount += base_amount_for_one_kg + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(i)).val());
-                                        amount_temp = base_amount_for_one_kg + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(i)).val());
+                                        amount += Math.floor( base_amount_for_one_kg) + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(i)).val());
+                                        amount_temp =  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(i)).val());
                                     }else if($("#weight-gm"+(i)).val() == 0){
                                         if($("#weight"+(i)).val() == 1){
-                                            amount += base_amount_for_one_kg;
-                                            amount_temp = base_amount_for_one_kg;
+                                            amount +=  Math.floor(base_amount_for_one_kg);
+                                            amount_temp =  Math.floor(base_amount_for_one_kg);
                                         }else{
-                                            amount += base_amount_for_one_kg + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(i)).val()) - 1 );
-                                            amount_temp = base_amount_for_one_kg + base_amount_for_more_than_one_kg * ( Math.floor($("#weigppht"+(i)).val()) - 1 );
+                                            amount +=  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(i)).val()) - 1 );
+                                            amount_temp =  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * ( Math.floor($("#weight"+(i)).val()) - 1 );
                                         }
                                     }                                
                                     if($("#cod-amt"+(i)).val() != 0){
@@ -578,10 +580,10 @@ if (session_status() == PHP_SESSION_NONE) {
                                         amount = parseFloat(amount.toFixed(2));                         
                                     }
                                     amount_details.push({"amount_self":amount_temp,"cod_self":$("#cod-amt"+(i)).val()});
-                                }
-                                if( $("#pick_default_pin").val() != $("#p_pin").val() ){      
-                                    amount += 25; //convence charge for regular delivery
-                                }
+                                }                                
+                            }
+                            if( $("#pick_default_pin").val() != $("#p_pin").val() ){      
+                                amount += 25; //convence charge for regular delivery
                             }
                             if(details.promo_rate > 0){
                                 // console.log(details.promo_rate);
@@ -718,9 +720,11 @@ if (session_status() == PHP_SESSION_NONE) {
                                                                         '</tr>'
                                                                     );
                                                                         cnt++;
-                                                                    }  
-                                                                    if(details.delivery_option=="regular" && count > 1){
-                                                                        newHTML.push('<tr><th colspan="4">Convenience Fee</th><th>25</th></tr>');
+                                                                    }
+                                                                    if( $("#pick_default_pin").val() != $("#p_pin").val() ){
+                                                                        // if(details.delivery_option=="regular" && count > 1){
+                                                                            newHTML.push('<tr><th colspan="4">Convenience Fee</th><th>25</th></tr>');
+                                                                        // }
                                                                     }
                                                                     newHTML.push('<tr><th colspan="4">Total</th><th colspan="2">'+details.amount+'</th></tr></table></span>'+
                                                                 '</div>'+
@@ -775,15 +779,15 @@ if (session_status() == PHP_SESSION_NONE) {
                                                 '<td>'+cnt+'</td>'+
                                                 '<td>'+ details.delivery_details[i].amount_self +'</td>'+
                                                 '<td>'+ details.delivery_details[i].cod_self +'</td>'+
-                                                '<td>'+ (parseInt(details.delivery_details[i].cod_self) * 0.015) +'</td>'+
+                                                '<td>'+ ((details.delivery_details[i].cod_self) * 0.015).toFixed(2) +'</td>'+
                                             '</tr>'
                                         );
                                             cnt++;
                                         }
-                                        if( $("#pick_default_pin").val() != $("#p_pin").val() ){                                      
-                                            if(details.delivery_option=="regular" && count > 1){
-                                                newHTML_Mobile.push('<tr><th colspan="4">Convenience Fee</th><th>50</th></tr>');
-                                            }
+                                        if( $("#pick_default_pin").val() != $("#p_pin").val() ){
+                                            // if(details.delivery_option=="regular" && count > 1){
+                                                newHTML_Mobile.push('<tr><th colspan="4">Convenience Fee</th><th>25</th></tr>');
+                                            // }
                                         }
                                         newHTML_Mobile.push('<tr><th colspan="4">Total</th><th colspan="2">'+details.amount+'</th></tr></table>');
                                         $("#res-mobile").html(newHTML_Mobile.join(""));
