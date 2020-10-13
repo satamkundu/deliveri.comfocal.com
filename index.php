@@ -293,44 +293,17 @@ if (session_status() == PHP_SESSION_NONE) {
                     </div>
                 </div>                
             </div>
-            <div class="card">
-                <div class="card-header text-center" id="headingTwo">
-                    <h5 class="mb-0">
-                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Proceed to Payment
-                        </button>
-                    </h5>
-                </div>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                    <div class="card-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-6 text-center">
-                                    <p class="upi-code"><b>UPI : 9088337606@okbizaxis</b></p>
-                                    <div style="color:blue;padding-bottom:1rem">OR</div>                                    
-                                    <table class="bank-details"><tr><th>ACCOUNT NUMBER &nbsp;&nbsp;: &nbsp;&nbsp;&nbsp;&nbsp;</th><td>50302496616</td>
-                                    <tr><th>BANK: </th><td>ALLAHABAD BANK</td>
-                                    <tr><th>BRANCH: </th><td>HOWRAH BOTANICAL GARDEN</td>
-                                    <tr><th>IFSC CODE: </th><td>ALLA0211813</td>
-                                    </table>
-                                </div>
-                                <div class="col-md-6">
-                                    <center>
-                                        <img src="assets/images/comfocall_upi.jpeg" alt="qr_code" style="height:70vh">
-                                    </center>
-                                </div>
-                                <div class="col-md-12 text-center">
-                                    <!-- <button class="btn btn-info" id="downloadPDF" onclick="printDiv()">Print Bill</button> -->
-                                    <button class="btn btn-info btn-last" onclick="printDiv()">Print Bill</button>
-                                    <a href="https://wa.me/+917450070216"><button class="btn btn-info btn-last">Share Screenshot of Payment with your Order ID</button></a>
-                                    <button class="btn btn-success btn-last" id="printed-name-tag">Do you want printed name tag?</button>
-                                    <button class="btn btn-success btn-last" id="hand-written-name-tag" data-toggle="modal" data-target=".bd-example-modal-lg">Do you want Hand written name tag?</button>
-                                </div>
-                            </div>
-                        </div>        
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <a href="https://comfocall.co.in/payment-page/" target="_blank"><button class="btn btn-info btn-last">Proceed to Payment</button></a>
+                        <button class="btn btn-info btn-last" onclick="printDiv()">Print Bill</button>
+                        <a href="https://wa.me/+917450070216"><button class="btn btn-info btn-last">Share Screenshot of Payment with your Order ID</button></a>
+                        <button class="btn btn-success btn-last" id="printed-name-tag">Do you want printed name tag?</button>
+                        <button class="btn btn-success btn-last" id="hand-written-name-tag" data-toggle="modal" data-target=".bd-example-modal-lg">Do you want Hand written name tag?</button>
                     </div>
                 </div>
-            </div>
+            </div>           
         </div>
     </div>
 
