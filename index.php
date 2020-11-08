@@ -217,6 +217,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                                 <div class="ui-widget">
                                                     <input type="number" autocomplete="new-pin" onkeyup="check_pin_avail(this.id)" id= "pin<?php echo $x; ?>" class="form-control mb-4" placeholder="Pincode">
                                                     <input type="hidden" id="pin_rate<?= $x ?>" value="0">
+                                                    <input type="hidden" id="pin_rate_taluk<?= $x ?>" value="">
                                                 </div>
                                             </div>
                                             <div class="col-md-3 deli-frm">
@@ -510,8 +511,11 @@ if (session_status() == PHP_SESSION_NONE) {
                             var amount = 0;                        
                             if(count == 1){
                                 const base_amount_for_more_than_one_kg = $("#pin_rate"+(count)).val();
+                                const  base_amount_for_half_gm = (base_amount_for_more_than_one_kg / 2);
                                 // const base_amount_for_one_kg = 50;
                                 const base_amount_for_one_kg = $("#pin_rate"+(count)).val();
+                                const taluk = $("#pin_rate_taluk"+(count)).val();
+                                
                                 if($("#weight-gm"+(count)).val() != 0){
                                     amount +=  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(count)).val());
                                     amount_temp =  Math.floor(base_amount_for_one_kg) + base_amount_for_more_than_one_kg * Math.floor($("#weight"+(count)).val());
@@ -904,6 +908,7 @@ if (session_status() == PHP_SESSION_NONE) {
                             '<div class="ui-widget">'+
                                 '<input type="number" autocomplete="new-pin" onkeyup="check_pin_avail(this.id)" id="pin'+count+'" class="form-control mb-4" placeholder="Pincode">'+
                                 '<input type="hidden" id="pin_rate'+count+'" value="0">'+
+                                '<input type="hidden" id="pin_rate_taluk'+count+'" value="">'+
                             '</div>'+
                         '</div>'+
                         '<div class="col-md-3 deli-frm">'+
@@ -1045,7 +1050,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
     $("#validate_promocode").click(function(){
         let promocode = $("#promo_code").val()
-        if(promocode != ""){
+        if(promocode != ""){            
             $.ajax({
                 type:'POST',
                 url:'process/data.php',
@@ -1076,7 +1081,8 @@ if (session_status() == PHP_SESSION_NONE) {
                     url: "process/request.php",
                     dataType: "json",
                     data: {
-                        q: request.term
+                        q: request.term,
+                        for_option:details.delivery_option
                     },
                     success: function( data ) {
                         response( data );
@@ -1086,8 +1092,10 @@ if (session_status() == PHP_SESSION_NONE) {
             minLength: 3,
             select: function( event, ui ) {
                 var vl = ui.item.id; 
+                var taluk = ui.item.taluk; 
                 var num = $("#"+id).attr('id');
                 $("#pin_rate"+num.substring(3)).val(vl);
+                $("#pin_rate_taluk"+num.substring(3)).val(vl);
             },
             open: function() {},
             close: function() {}
